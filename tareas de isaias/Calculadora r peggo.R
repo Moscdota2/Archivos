@@ -24,7 +24,7 @@ calcular <- function(x, y, operacion1,  operacion2 = NA){
   if(!is.na(x) & !is.na(y) & !is.na(operacion1)){
      resultado <- funcion_calculadora(x,y,operacion1)
     if(!is.na(operacion2)){
-      resultado <- funcion_calculadora(resultado, nuevo_valor, operacion2)
+      resultado <- funcion_calculadora(resultado, y, operacion2)
     }
     resultado
     } else {
@@ -34,8 +34,37 @@ calcular <- function(x, y, operacion1,  operacion2 = NA){
  return(resultado)
 }
 
+my_name <- readline(prompt = "Ingrese su nombre!: ")
 
-calcular(x = 10, y = 10, operacion1 =  'resta', nuevo_valor =  10, operacion2 =  'suma')
+valor1 <- readline(prompt="Ingrese el primer valor: ")
+valor2 <- readline(prompt="Ingrese segundo valor: ")
+
+valor1  <- as.integer(valor1) 
+valor2 <- as.integer(valor2)
+
+op1 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
+op2 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
+
+print(paste("Hola,", my_name, 
+            "el resulado loco de su calculadora es: ", 
+            calcular(x = valor1, y = valor2, operacion1 = op1)
+            ))
+
+resultado <- calcular(x = valor1, y = valor2, operacion1 = op1)
+
+print(resultado)
+
+regunta_operacion_3 <- readline(prompt="desea hacer alguna operacion con el resultado: ")
+
+if(regunta_operacion_3 == 'si'){
+  
+  valor2 <- readline(prompt="Ingrese segundo valor: ")
+  
+  resultado2 <- calcular(x = resultado, y = valor2, operacion1 = op1)
+  
+}
 
 
+print(resultado2)
 
+#https://fhernanb.github.io/Manual-de-R/ingresando-datos-a-r.html
