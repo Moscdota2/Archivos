@@ -42,11 +42,12 @@ valor2 <- readline(prompt="Ingrese segundo valor: ")
 valor1  <- as.integer(valor1) 
 valor2 <- as.integer(valor2)
 
+
 op1 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
-op2 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
+
 
 print(paste("Hola,", my_name, 
-            "el resulado loco de su calculadora es: ", 
+            "el resulado loco de su calculadora es:", 
             calcular(x = valor1, y = valor2, operacion1 = op1)
             ))
 
@@ -54,16 +55,14 @@ resultado <- calcular(x = valor1, y = valor2, operacion1 = op1)
 
 print(resultado)
 
-regunta_operacion_3 <- readline(prompt="desea hacer alguna operacion con el resultado: ")
+pregunta_operacion_3 <- readline(prompt="Desea hacer alguna operacion con el resultado: ")
 
-if(regunta_operacion_3 == 'si'){
+if(pregunta_operacion_3 == 'si'){
+  valor3 <- readline(prompt="Ingrese el otro valor: ")
+  op2 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
   
-  valor2 <- readline(prompt="Ingrese segundo valor: ")
-  
-  resultado2 <- calcular(x = resultado, y = valor2, operacion1 = op1)
-  
+  resultado2 <- calcular(x = resultado, y = valor2, operacion1 = op2)
 }
-
 
 print(resultado2)
 
