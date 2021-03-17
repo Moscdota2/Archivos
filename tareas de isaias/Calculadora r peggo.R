@@ -34,22 +34,13 @@ calcular <- function(x, y, operacion1,  operacion2 = NA){
  return(resultado)
 }
 
-my_name <- readline(prompt = "Ingrese su nombre!: ")
-
 valor1 <- readline(prompt="Ingrese el primer valor: ")
 valor2 <- readline(prompt="Ingrese segundo valor: ")
 
 valor1  <- as.integer(valor1) 
 valor2 <- as.integer(valor2)
 
-
 op1 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
-
-
-print(paste("Hola,", my_name, 
-            "el resulado loco de su calculadora es:", 
-            calcular(x = valor1, y = valor2, operacion1 = op1)
-            ))
 
 resultado <- calcular(x = valor1, y = valor2, operacion1 = op1)
 
@@ -66,6 +57,5 @@ if(pregunta_operacion_3 == 'si'){
 
 print(resultado2)
 
-#para arreglar una mondá en githuba
-
 #https://fhernanb.github.io/Manual-de-R/ingresando-datos-a-r.html
+#show dialog boxes en r perro recuerda
