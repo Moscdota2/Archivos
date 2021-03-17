@@ -66,4 +66,6 @@ if(pregunta_operacion_3 == 'si'){
 
 print(resultado2)
 
+#para arreglar una mondá en github
+
 #https://fhernanb.github.io/Manual-de-R/ingresando-datos-a-r.html
