@@ -60,3 +60,4 @@ if(pregunta_operacion_3 == "si" && resultado == error){
   print("Error: no se puede utilizar un valor infinito")
 }
 print(resultado2)
+#https://rstudio.github.io/rstudioapi/reference/index.html
