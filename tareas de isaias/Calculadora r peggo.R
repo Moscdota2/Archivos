@@ -53,7 +53,7 @@ if(pregunta_operacion_3 == 'si'){
   valor3 <- as.integer(valor3)
   op2 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
   
-  resultado2 <- calcular(x = resultado, y = valor2, operacion1 = op2)
+  resultado2 <- calcular(x = resultado, y = valor3, operacion1 = op2)
 }
 
 print(resultado2)
