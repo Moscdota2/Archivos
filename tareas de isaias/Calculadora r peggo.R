@@ -13,6 +13,9 @@ funcion_calculadora <- function(n1, n2, comp){
   } 
   if (comp == 'division'){
     res <- (n1 / n2)
+    error <- if(n1 || n2 == 0){
+      res <- print("No se puede dividir entre cero")
+    }
     return(res)
   } 
   return(res)
@@ -53,5 +56,7 @@ if(pregunta_operacion_3 == 'si'){
   
   resultado2 <- calcular(x = resultado, y = valor3, operacion1 = op2)
 }
-
+if(pregunta_operacion_3 == "si" && resultado == error){
+  print("Error: no se puede utilizar un valor infinito")
+}
 print(resultado2)
