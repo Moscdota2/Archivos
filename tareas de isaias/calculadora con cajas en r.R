@@ -1,7 +1,6 @@
-winDialog(type="ok", message="¿Usted quiere BORRAR el archivo?")
-winDialog(type="yesno", message="¿Usted quiere BORRAR el archivo?")
 library(utils)
-library(svDialogs) 
+library(svDialogs)
+library(rstudioapi)
 funcion_calculadora <- function(n1, n2, comp){
   if(comp == 'suma'){
     res <- (n1 + n2)
@@ -19,9 +18,7 @@ funcion_calculadora <- function(n1, n2, comp){
     res <- (n1 / n2)
     return(res)
   } 
-  
   return(res)
-  
 }
 
 calcular <- function(x, y, operacion1,  operacion2 = NA){
@@ -38,28 +35,26 @@ calcular <- function(x, y, operacion1,  operacion2 = NA){
   return(resultado)
 }
 
-valor1 <- dlgInput(message="Ingrese su nombre: ")
-valor2 <- dlgInput(message="Ingrese su edad en años: ")
+valor1 <- showPrompt(title = "Calculadora", message="Ingrese el primer valor: ") 
+valor2 <- showPrompt(title = "Calculadora", message="Ingrese el segundo valor: ")
 
-valor1  <- as.integer(my_age) # convert character into integer
-valor2  <- as.integer(my_age)
+valor1  <- as.double(valor1) # convert character into integer
+valor2  <- as.double(valor2)
 
-op1 <- dlgInput(message = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
-
+op1 <- showPrompt(title = "Calculadora", message = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
 resultado <- calcular(x = valor1, y = valor2, operacion1 = op1)
 
-winDialog(type="ok", message="El resultado es:", resultado )
+showDialog("Calculadora", message="El resultado es:", resultado )
 print(resultado)
 
-pregunta_operacion_3 <- readline(prompt="Desea hacer alguna operacion con el resultado: ")
+pregunta_operacion_3 <-  showPrompt(title = "Calculadora", message= "Desea hacer alguna operacion con el resultado: ")
 
 if(pregunta_operacion_3 == 'si'){
-  valor3 <- readline(prompt="Ingrese el otro valor: ")
-  op2 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
-  
-  resultado2 <- calcular(x = resultado, y = valor2, operacion1 = op2)
+  valor3 <- showPrompt(title = "Calculadora", message="Ingrese el otro valor: ")
+  valor3 <- as.double(valor3)
+  op2 <- showPrompt(title = "Calculadora", message= "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
+  resultado2 <- calcular(x = resultado, y = valor3, operacion1 = op2)
 }
 
+showDialog("Calculadora", message="El resultado es:", resultado2 )
 print(resultado2)
-
-## show dialog boxes en r

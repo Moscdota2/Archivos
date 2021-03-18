@@ -15,9 +15,7 @@ funcion_calculadora <- function(n1, n2, comp){
     res <- (n1 / n2)
     return(res)
   } 
-
   return(res)
- 
 }
 
 calcular <- function(x, y, operacion1,  operacion2 = NA){
@@ -37,8 +35,8 @@ calcular <- function(x, y, operacion1,  operacion2 = NA){
 valor1 <- readline(prompt="Ingrese el primer valor: ")
 valor2 <- readline(prompt="Ingrese segundo valor: ")
 
-valor1  <- as.integer(valor1) 
-valor2 <- as.integer(valor2)
+valor1  <- as.double(valor1) 
+valor2 <- as.double(valor2)
 
 op1 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
 
@@ -50,13 +48,10 @@ pregunta_operacion_3 <- readline(prompt="Desea hacer alguna operacion con el res
 
 if(pregunta_operacion_3 == 'si'){
   valor3 <- readline(prompt="Ingrese el otro valor: ")
-  valor3 <- as.integer(valor3)
+  valor3 <- as.double(valor3)
   op2 <- readline(prompt = "Ingrese el valor aritmetico a ser comparado con las dos variables: ")
   
   resultado2 <- calcular(x = resultado, y = valor3, operacion1 = op2)
 }
 
 print(resultado2)
-
-#https://fhernanb.github.io/Manual-de-R/ingresando-datos-a-r.html
-#show dialog boxes en r perro recuerda
