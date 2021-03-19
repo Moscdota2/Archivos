@@ -29,7 +29,7 @@ calcular <- function(x, y, operacion1,  operacion2 = NA){
     }
     resultado
   } else {
-    print('ingrese datos correctos')
+    showDialog("Calculadora", message = 'Ingrese datos correctos')
     resultado <- NA
   }
   return(resultado)
