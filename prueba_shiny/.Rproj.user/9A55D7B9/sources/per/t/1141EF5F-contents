@@ -1,4 +1,4 @@
-source('Ejercicios R/Tareas Isaias/Ejercicio Gmail 2 Funciones.R')
+source('/home/analista/Ejercicios R/Tareas Isaias/Ejercicio Gmail 2 Funciones.R')
 
 library(googledrive)
 library(lubridate)
@@ -28,12 +28,7 @@ names(data) <- func_titulo(data)
 
 names(data)
 
-comparadorjuntos <- read_xlsx('Trabajo/Comparadores.xlsx')
-funcion_datos(data)
-
-
-names(data)
-
+comparadorjuntos <- read_xlsx('/home/analista/Trabajo/Comparadores.xlsx')
 
 comparadorjuntos <- comparadorjuntos %>% 
   mutate(Asunto = trimws(Asunto)) %>% 
@@ -41,6 +36,13 @@ comparadorjuntos <- comparadorjuntos %>%
   mutate(Asunto = chartr('áéíóú', 'aeiou', Asunto)) %>%
   mutate(Asunto = gsub('[[:punct:]]', '_', Asunto)) %>%
   mutate(Asunto = gsub('_{2,}', '_', Asunto))
+
+comparadorjuntos <- comparadorjuntos %>% 
+  mutate(información = trimws(información)) %>% 
+  mutate(información = tolower(información)) %>%
+  mutate(información = chartr('áéíóú', 'aeiou', información)) %>%
+  mutate(información = gsub('[[:punct:]]', '_', información)) %>%
+  mutate(información = gsub('_{2,}', '_', información))
 
 
 data <- data %>% 
@@ -83,5 +85,41 @@ estandar <- cond1 & cond2 & cond3 & cond4 & cond5
 data$estandar <- estandar
 
 remove(cond1, cond2, cond3, cond4, cond5, estandar)
+names(data)
+#------------------------------------------------------------
+data <- data %>%
+  mutate(respondida = if_else(
+    is.na(codigo_de_comunicacion_enviada_informacion_atencion_al_ciudadano_),
+    'No respondida',
+    'Respondida'))
+#------------------------------------------------------------
+
+data <- data %>% mutate(codigo_proyecto = gsub('[[:cntrl:]]','',codigo_proyecto)) %>% mutate(codigo_proyecto = trimws(codigo_proyecto))
+
+resumen_respondida <- data %>% group_by(respondida) %>% tally(name = 'Proyectos')
+resumen_estandar <- data %>% filter(respondida == 'No respondida') %>% group_by(estandar) %>% tally(name = 'Proyectos')
+
+data$codigo_valido <- grepl('^CCO-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{5}', data$codigo_proyecto) | grepl('^COM-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{5}', data$codigo_proyecto)
+
+
+data <- data %>% mutate(clave = paste(codigo_proyecto,fecha_de_carga_al_drive))
+
+
+#--------------------------------------------------------------------------------------------
+
+comparadol <- read.csv('/home/analista/Descargas/sinco.project (1).csv', stringsAsFactors = FALSE)
+
+comparadol <- comparadol %>% select(code, obpp_situr_code, obpp_name,state )
+
+unique(comparadol$state)
+
+proyectos_en_evaluacion <- comparadol %>% filter(state %in% 'En evaluación') %>% pull(code)
+
+#---------------------------------------------------------------------------------------------
+
+data <- data %>% mutate(estatus_valido = if_else(codigo_proyecto %in% proyectos_en_evaluacion, FALSE,TRUE))
+#--------------------------------------------------------------------------------------------------
+titulo <- func_titulo(comparadorjuntos)
+
 
 

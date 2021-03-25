@@ -3,7 +3,7 @@
     "path": "~/prueba_shiny/app.R",
     "project_path": "app.R",
     "type": "r_source",
-    "hash": "3516657941",
+    "hash": "2068576821",
     "contents": "",
     "dirty": false,
     "created": 1616617186846.0,
@@ -11,14 +11,16 @@
     "relative_order": 1,
     "properties": {
         "source_window_id": "",
-        "Source": "Source"
+        "Source": "Source",
+        "cursorPosition": "100,32",
+        "scrollLine": "86"
     },
     "folds": "",
-    "lastKnownWriteTime": 1616617181,
+    "lastKnownWriteTime": 1616705149,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1616617181,
+    "last_content_update": 1616705149795,
     "read_only": false,
     "read_only_alternatives": []
 }
