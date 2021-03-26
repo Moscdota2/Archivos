@@ -122,5 +122,5 @@ data <- data %>% mutate(estatus_valido = if_else(codigo_proyecto %in% proyectos_
 #--------------------------------------------------------------------------------------------------
 titulo <- func_titulo(comparadorjuntos)
 colnames(comparadorjuntos) <- titulo
-s
+
 
