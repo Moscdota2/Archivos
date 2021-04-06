@@ -1,6 +1,6 @@
 {
     "id": "1851759F",
-    "path": "~/Trabajo/x/comunicaciones_borrador/server.R",
+    "path": "~/Github/Archivos/comunicaciones_borrador/server.R",
     "project_path": "server.R",
     "type": "r_source",
     "hash": "2242938930",
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "96,95",
-        "scrollLine": "84"
+        "cursorPosition": "1,33",
+        "scrollLine": "0"
     },
     "folds": "",
     "lastKnownWriteTime": 1617639703,
