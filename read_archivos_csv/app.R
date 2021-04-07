@@ -11,6 +11,7 @@ ui <- fluidPage(
     titlePanel("Lectura de Archivos"),
     
     sidebarLayout(
+        
         sidebarPanel(
             
             fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel"),
@@ -21,17 +22,15 @@ ui <- fluidPage(
         ),
 
         mainPanel(
-          navbarPage("Tablas",
+            
+            navbarPage("Tablas",
                      tabPanel("Tabla Borrador", dataTableOutput("fileid")),
                      tabPanel("Archivo CSV", dataTableOutput('fileid2')),
                      tabPanel("Tabla Comparador", dataTableOutput('fileid3')),
-                     tabPanel("Cambios Aplicados de Estandarización", verbatimTextOutput("text"))
+                     tabPanel("Cambios Aplicados de Estandarización", verbatimTextOutput("text"), dataTableOutput('nText'))
                      
-                ),
-            
-          dataTableOutput('nText')
-            
-        ),
+            )
+        )
     )
 )
 
@@ -41,8 +40,7 @@ server <- function(input, output) {
     
     output$fileid <- renderDataTable({
         archivo <- read_xlsx(input$fileid$datapath)
-        #archivo <- read_xlsx(input$fileid$datapath)
-        })
+    })
     
     output$fileid2 <- renderDataTable({
         archivo <- read.csv(input$fileid2$datapath)
@@ -55,7 +53,6 @@ server <- function(input, output) {
     dfc <- eventReactive(input$bottomid, { 
         archivo <- read_xlsx(input$fileid$datapath)
         archivo <- func_limpieza(archivo)
-        print(archivo)
     })
 
     output$nText <- renderDataTable({
