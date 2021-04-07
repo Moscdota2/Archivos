@@ -13,23 +13,23 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             
-            
-            fileInput(inputId = 'fileid', label = "Elija el Archivo Excel"),
-            fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV'),
-            fileInput(inputId = 'fileid3', label = 'Elija el Acrivo De Comparacion excel'),
+            fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel"),
+            fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP'),
+            fileInput(inputId = 'fileid3', label = 'Elija el Archivo Comparación de archivo .Excel'),
             actionButton(inputId = 'bottomid', label = 'Aceptar')
             
         ),
 
         mainPanel(
           navbarPage("Tablas",
-                     tabPanel("excel", dataTableOutput("fileid")),
-                     tabPanel("csv", dataTableOutput('fileid2')),
-                     tabPanel("comparador", dataTableOutput('fileid3')),
-                     tabPanel("nuevo",verbatimTextOutput("text"))
+                     tabPanel("Tabla Borrador", dataTableOutput("fileid")),
+                     tabPanel("Archivo CSV", dataTableOutput('fileid2')),
+                     tabPanel("Tabla Comparador", dataTableOutput('fileid3')),
+                     tabPanel("Cambios Aplicados de Estandarización", verbatimTextOutput("text"))
                      
-          ),
-            dataTableOutput('nText')
+                ),
+            
+          dataTableOutput('nText')
             
         ),
     )
@@ -51,7 +51,6 @@ server <- function(input, output) {
     output$fileid3 <- renderDataTable({
       archivo <- read_xlsx(input$fileid3$datapath)
     })
-    
     
     dfc <- eventReactive(input$bottomid, { 
         archivo <- read_xlsx(input$fileid$datapath)
@@ -87,7 +86,6 @@ server <- function(input, output) {
         tex()
     })
       
-    
 }
 
 shinyApp(ui = ui, server = server)
