@@ -1,3 +1,4 @@
+#Estandarizamos los títulos de las columnas del dataframe
 func_titulo <- function(df){
   
   titulo <- colnames(df)
@@ -13,6 +14,7 @@ func_titulo <- function(df){
   
 }
 
+#Estandarizamos el cuerpo de los datos de las filas y columnas del dataframe
 func_limpieza <- function(data){
 
 names(data)<- func_titulo(data)

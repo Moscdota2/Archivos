@@ -31,9 +31,12 @@ func_titulo <- function(df){
 #               , type = 'xlsx', path = "datas/BORRADOR_ATENCION_AL_CIUDADANO", overwrite = TRUE)
 
 #Leemos el dataframe que descargamos.
-data <- read_xlsx("./datas/BORRADOR ATENCIÓN AL CIUDADANO.xlsx", sheet = '2021')
+#data <- read_xlsx("./datas/BORRADOR ATENCIÓN AL CIUDADANO.xlsx", sheet = '2021')
 
 #Utilizamos la función de estandarización para los títulos de la data y los mostramos.
+
+Boto
+
 names(data) <- func_titulo(data)
 
 data <- data %>% filter(!is.na(codigo_proyecto))
