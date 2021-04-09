@@ -1,4 +1,7 @@
 #Llamamos a las librerías que vamos a usar.
+
+#load('/home/analista/read_archivos_csv/data.RData')
+
 library(googledrive)
 library(lubridate)
 library(dplyr)
@@ -34,8 +37,6 @@ func_titulo <- function(df){
 #data <- read_xlsx("./datas/BORRADOR ATENCIÓN AL CIUDADANO.xlsx", sheet = '2021')
 
 #Utilizamos la función de estandarización para los títulos de la data y los mostramos.
-
-Boto
 
 names(data) <- func_titulo(data)
 
@@ -142,7 +143,7 @@ unique(comparador$state)
 proyectos_en_evaluacion <- comparador %>% filter(state %in% 'En evaluación') %>% pull(code)
 
 #Utilizamos una condicional para comparar códigos.
-data <- data %>% mutate(estatus_valido = if_else(codigo_proyecto %in% proyectos_en_evaluacion, FALSE,TRUE))
+data <- data %>% mutate(estatus_valido = if_else(codigo_de_proyecto %in% proyectos_en_evaluacion, FALSE,TRUE))
 
 #Estandarizamos el título de el data de la comparación.
 titulo <- func_titulo(comparadorjuntos)

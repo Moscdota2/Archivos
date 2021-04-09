@@ -1,6 +1,12 @@
 #server
+library(shiny)
+library(dplyr)
+
+
 server <- function(input, output) {
   load('./datas.RData')
+  
+  
   
   #Colocamos un link para que los analistas puedan descargar los datos que no se pueden responder automatizadamente.  
   output$descarga_no_estandar <- downloadHandler(

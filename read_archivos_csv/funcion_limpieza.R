@@ -53,3 +53,7 @@ data <- data %>%
 
 return(data)
 }
+
+
+
+load('comparadorjuntos.RData')
