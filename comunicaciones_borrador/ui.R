@@ -1,12 +1,9 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  
   titlePanel("Devolución a Borrador"),
-  
   sidebarLayout(
     sidebarPanel(
-      
       HTML('<h3>Estatus de Respuesta</h3>'),
       htmlOutput('estatus'),
       

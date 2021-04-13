@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(readxl)
+library(dplyr)
 
 shinyServer(function(input, output) {
 
@@ -38,7 +39,7 @@ shinyServer(function(input, output) {
     output$fie <- renderDataTable({
         
         tryCatch({
-            grt <- read_xlsx(input$fileid$datapath, sheet = '2021')
+            frt <- read.csv(input$fileid2$datapath, stringsAsFactors = FS)
         },
         
         error = function(err){
@@ -123,7 +124,7 @@ shinyServer(function(input, output) {
         #### 
         
         
-        # CArgar el archivo 2 y filtrado por evaluacion -- comparador.csv
+        # Cargar el archivo 2 y filtrado por evaluacion -- comparador.csv
         archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
         
         archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
@@ -149,7 +150,7 @@ shinyServer(function(input, output) {
     
     comparador <- reactive({
         
-        # CArgar el archivo 2 y filtrado por evaluacion -- comparador.csv
+        # Cargar el archivo 2 y filtrado por evaluacion -- comparador.csv
         archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
         
         archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
@@ -395,12 +396,12 @@ shinyServer(function(input, output) {
     })
     
     #Empezamos con el encabezado HTML para la presentación.        
-    #output$titulo <- renderUI({
-        #HTML('<h1 style="color: red">TEXTO MODELO, RESPUESTAS PARA “ESTATUS BORRADOR”.</h1>')
-   # })
+    output$titulo2 <- renderUI({
+        HTML('<h1 style="color: blue">TEXTO MODELO, RESPUESTAS PARA “ESTATUS BORRADOR”.</h1>')
+    })
     
     #Mostramos la comunicación de SINCO, utilizamos nuestras variables para mostrar los motivos correspondientes de cada proyecto.       
-    output$comunicacion <- renderUI({
+    output$comunicacion2 <- renderUI({
         
         data_aux <- data %>% filter(clave == input$in3, respondida == 'No respondida')
         
