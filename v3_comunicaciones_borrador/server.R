@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(readxl)
 library(dplyr)
+library(shinyjs)
 
 shinyServer(function(input, output) {
 
@@ -25,6 +26,7 @@ shinyServer(function(input, output) {
     output$file <- renderDataTable({
         tryCatch({
             grt <- read_xlsx(input$fileid$datapath, sheet = '2021')
+            head(grt[1:6,])
         },
         
         error = function(err){
@@ -39,7 +41,7 @@ shinyServer(function(input, output) {
     output$fie <- renderDataTable({
         
         tryCatch({
-            frt <- read.csv(input$fileid2$datapath, stringsAsFactors = FS)
+            nub <- read.csv(input$fileid2$datapath, stringsAsFactors = F)
         },
         
         error = function(err){
@@ -52,6 +54,23 @@ shinyServer(function(input, output) {
     })
    
     ##############################################################################
+    
+    output$mostraralgo <- renderUI({
+      box(
+        HTML('<h3>Estatus de Respuesta</h3>'),
+        htmlOutput('estatus'),
+        HTML('<h3>Tipo de NO Respondidas</h3>'),
+        htmlOutput('estandar'),
+        downloadLink("descarga_no_estandar", "Descargar proyectos con comunicaciones no estandar"),
+        HTML('<h3>Evaluados</h3>'),
+        htmlOutput('estatus_proyecto'),
+        downloadLink("descarga_evaluados", "Descargar proyectos ya evaluados"),
+        HTML('<h3>Respuestas estandar</h3>'),
+        htmlOutput(("respuestas_estandar")),
+      )
+    })
+
+    #############################################################################
     
     comparadorjuntos <- reactive({
         
@@ -291,18 +310,24 @@ shinyServer(function(input, output) {
     
     ##############################################################################
     
+    
+    observeEvent(input$bot, {
+      
+      toggle('mostraralgo')
+      toggle('titulo2')
+      toggle('comunicacion2')
+    
+    })
+    
+    
+    
     dfc <- eventReactive(input$bot, { 
-        
+      
         data <- data()
-        
         comparadorjuntos <- comparadorjuntos()
-        
         comparador <- comparador()
-        
         proyectos_en_evaluacion <- proyectos_en_evaluacion()
-        
         resumen_estandar <- resumen_estandar()
-        
         resumen_respondida <- resumen_respondida()
         
         
@@ -397,7 +422,7 @@ shinyServer(function(input, output) {
     
     #Empezamos con el encabezado HTML para la presentación.        
     output$titulo2 <- renderUI({
-        HTML('<h1 style="color: blue">TEXTO MODELO, RESPUESTAS PARA “ESTATUS BORRADOR”.</h1>')
+        HTML('<h1 style="color: blue">RESPUESTAS PARA “ESTATUS BORRADOR”.</h1>')
     })
     
     #Mostramos la comunicación de SINCO, utilizamos nuestras variables para mostrar los motivos correspondientes de cada proyecto.       
@@ -448,7 +473,7 @@ shinyServer(function(input, output) {
 			<u><i><b>',motivo_5,'</b></i></u><p>',informacion_5,'</p><br>
 			Una vez realizada las correcciones correspondientes, haga clic nuevamente en el botón finalizar del paso 5 para que su proyecto sea evaluado nuevamente.
 			Recuerde que en caso de presentar inconvenientes puede enviar una comunicación a través del módulo del sistema.<br><br>
-			<b>EN SINCO, Creamos condiciones para el beneficio colectivo.</b><hr>
+			<b>EN SINCO, Creamos condiciones para el beneficio colectivo.</b>
 			<hr>
 			<b>Estatus del proyecto:</b><p>',estatus_proyecto,'</p></h1>
 		</p>')

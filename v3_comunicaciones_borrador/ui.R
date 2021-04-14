@@ -1,8 +1,11 @@
 library(shiny)
 library(shinydashboard)
+library(readxl)
 library(dplyr)
+library(shinyjs)
     
  ui <- fluidPage(#Leo
+   useShinyjs(),
   dashboardPage( skin = 'black',
        dashboardHeader(title = "Devolución a Borrador"),
       dashboardSidebar(
@@ -19,45 +22,54 @@ library(dplyr)
                            tabItems(
                                tabItem(
                                    tabName = 'inicio',
-                                   htmlOutput('titulo'),
-                                   box(solidHeader = F, 
+                                   box(solidHeader = T, 
                                        width = 12, column(12, align="center", imageOutput('alcaravan_png',height = "200px"))),
                                    box(solidHeader = F, 
                                        width = 12, column(12, align="center", imageOutput('sinco_png', height = "375px")))
                                ),
                                tabItem(
                                    tabName = 'info',
-                                   #################################################################################################
-                                   box(fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel"),
+                                   box(
+                                     fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel"),
                                        fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP'),
-                                       actionButton(inputId = 'bot', label = 'Aceptar'),
-                                   ),
-                                   ################################################################################################
-                                   box(HTML('<h3>Estatus de Respuesta</h3>'),
-                                        htmlOutput('estatus'),
-                                        HTML('<h3>Tipo de NO Respondidas</h3>'),
-                                        htmlOutput('estandar'),
-                                        downloadLink("descarga_no_estandar", "Descargar proyectos con comunicaciones no estandar"),
-                                        HTML('<h3>Evaluados</h3>'),
-                                        htmlOutput('estatus_proyecto'),
-                                        downloadLink("descarga_evaluados", "Descargar proyectos ya evaluados"),
-                                        HTML('<h3>Respuestas estandar</h3>'),
-                                        htmlOutput(("respuestas_estandar"))
-                                       ),
-                                       box(mainPanel(
-                                         htmlOutput("titulo2"),
-                                         htmlOutput("comunicacion2")),
-                                       
+                                      width = 12
+                                     ),
+                                   box(
                                      
-                               ),
+                                     
+                                     
+                                     solidHeader = T, 
+                                     width = 12, column(12, align="center", 
+                                                        actionButton(inputId = 'bot', label = 'Aceptar' ),
+                                                        actionButton(inputId = 'bot2', label = 'Regresar'))),
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     
+                                   
+                                  box(
+                                      box(hidden(htmlOutput('mostraralgo')), width = 4),
+                                      box(hidden(
+                                        htmlOutput("titulo2"), 
+                                        htmlOutput("comunicacion2")), width = 8
+                                        ),
+                                      
+                                      width = 12),
+                                   ),
                                
-                               ),
+                               
+                               
                                
                                tabItem(tabName = 'borrador', 
-                                       box(dataTableOutput('file'))),
+                                       dataTableOutput('file')),
                                tabItem('code_sinco', 
-                                       box(dataTableOutput('fie'))),
+                                       dataTableOutput('fie')),
                                tabItem(tabName = 'pasos',
+                                       box(width = 12,HTML('<h1 style=" color:blue">Cambios Generados Por La Aplicación</h1>')),
                                        htmlOutput("texto"))
                            )
                            
