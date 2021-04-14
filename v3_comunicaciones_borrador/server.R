@@ -55,19 +55,33 @@ shinyServer(function(input, output) {
    
     ##############################################################################
     
-    output$mostraralgo <- renderUI({
-      box(
-        HTML('<h3>Estatus de Respuesta</h3>'),
-        htmlOutput('estatus'),
-        HTML('<h3>Tipo de NO Respondidas</h3>'),
-        htmlOutput('estandar'),
-        downloadLink("descarga_no_estandar", "Descargar proyectos con comunicaciones no estandar"),
-        HTML('<h3>Evaluados</h3>'),
-        htmlOutput('estatus_proyecto'),
-        downloadLink("descarga_evaluados", "Descargar proyectos ya evaluados"),
-        HTML('<h3>Respuestas estandar</h3>'),
-        htmlOutput(("respuestas_estandar")),
+    output$carga_datos <- renderUI({
+      fluidPage( 
+        fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel", accept = '.xlsx'),
+        fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP', accept = '.csv')
       )
+        })
+    
+    output$mostrar_asuntos <- renderUI({
+      fluidPage(box(
+        box(
+          HTML('<h3>Estatus de Respuesta</h3>'),
+          htmlOutput('estatus'),
+          HTML('<h3>Tipo de NO Respondidas</h3>'),
+          htmlOutput('estandar'),
+          downloadLink("descarga_no_estandar", "Descargar proyectos con comunicaciones no estandar"),
+          HTML('<h3>Evaluados</h3>'),
+          htmlOutput('estatus_proyecto'),
+          downloadLink("descarga_evaluados", "Descargar proyectos ya evaluados"),
+          HTML('<h3>Respuestas estandar</h3>'),
+          htmlOutput(("respuestas_estandar")), width = 4
+        ),
+        
+        box(
+          htmlOutput("titulo2"), 
+          htmlOutput("comunicacion2"), width = 8),
+        
+        width = 12))
     })
 
     #############################################################################
@@ -313,9 +327,8 @@ shinyServer(function(input, output) {
     
     observeEvent(input$bot, {
       
-      toggle('mostraralgo')
-      toggle('titulo2')
-      toggle('comunicacion2')
+      toggle('mostrar_asuntos')
+      toggle('carga_datos')
     
     })
     
