@@ -85,7 +85,6 @@ shinyServer(function(input, output) {
             HTML('<h3>Estatus de Respuesta</h3>'),
             htmlOutput('estatus'),
             HTML('<h3>Tipo de NO Respondidas</h3>'),
-            
             htmlOutput('estandar'),
             downloadLink("descarga_no_estandar", "Descargar proyectos con comunicaciones no estandar"),
             HTML('<h3>Evaluados</h3>'),
@@ -95,6 +94,8 @@ shinyServer(function(input, output) {
             htmlOutput(("respuestas_estandar")), width = 4
           ),
           
+          
+        
           box(
             htmlOutput("titulo2"), 
             htmlOutput("comunicacion2"), width = 8),
@@ -185,7 +186,7 @@ shinyServer(function(input, output) {
       archivo <- archivo %>% mutate(clave = paste(codigo_proyecto, '-',n_))
 
       archivo <- archivo %>% mutate(estatus_valido = if_else(codigo_proyecto %in% proyectos_en_evaluacion, FALSE,TRUE))
-
+      
       # Devolver el dato
       archivo
 
@@ -381,30 +382,34 @@ shinyServer(function(input, output) {
    
   
     #Colocamos un link para que los analistas puedan descargar los datos que no se pueden responder automatizadamente.  
+   
     output$descarga_no_estandar <- downloadHandler(
-        filename = function() {
-            paste("comunicacionesNoEstandar.csv", sep="")
-        },
-        content = function(file) {
-            
-            data_descarga <- data %>% filter(estandar == FALSE, respondida == 'No respondida', !is.na(codigo_proyecto))
-            
-            write.csv(data_descarga, file)
-        }
+      
+      filename = function() {
+        paste("comunicacionesNoEstandar.csv", sep="")
+      },
+      content = function(file) {
+        data <- df()
+        data_descarga <- data %>% filter(estandar == FALSE, respondida == 'No respondida', !is.na(codigo_proyecto))
+        
+        write.csv(data_descarga, file)
+      }
     )
     
     
     output$descarga_evaluados <- downloadHandler(
+      filename = function() {
+        paste("comunicacionesEvaluadosYA.csv", sep="")
+      },
+      content = function(file) {
+        data <- df()
+        comparador <- comparador()
         
-        filename = function() {
-            paste("comunicacionesEvaluadosYA.csv", sep="")
-        },
-        content = function(file) {
-            codigos <- data %>% filter(respondida == 'No respondida') %>% pull(codigo_proyecto)
-            
-            data_descarga <- comparador %>% filter(code %in% codigos, state == 'En evaluación')
-            write.csv(data_descarga, file)
-        }
+        codigos <- data %>% filter(respondida == 'No respondida') %>% pull(codigo_proyecto)
+        
+        data_descarga <- comparador %>% filter(code %in% codigos, state == 'En evaluación')
+        write.csv(data_descarga, file)
+      }
     )
     
     #Mostramos los no respondidos y respondidos.  
