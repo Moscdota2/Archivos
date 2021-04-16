@@ -92,7 +92,6 @@ shinyServer(function(input, output) {
         if(is.null(archivo_csv(arc_csv$datapath))){
           return(HTML('<h1>Cargue Archivo</h1>'))
         }
-      s
                 
         
         
