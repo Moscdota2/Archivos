@@ -63,21 +63,24 @@ shinyServer(function(input, output) {
     
     output$carga_datos <- renderUI({
       fluidPage(
-        fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel", accept = '.xlsx'),
-        fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP', accept = '.csv')
+        box(fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel", accept = '.xlsx'),
+        fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP', accept = '.csv'),
+        width = 6)
         )
       })
     
     output$mostrar_asuntos <- renderUI({
+      
       tryCatch({
-        arc_exel <- input$fileid
-        arc_csv <- input$fileid2
+        fluidPage(box(arc_exel <- input$fileid,
+        arc_csv <- input$fileid2))
         
-        if(is.null(arc_exel)){
-          return(HTML('<h1>Cargue Archivo</h1>'))}
+        fluidPage(box(if(is.null(arc_exel)){
+          return(HTML('<h1>Cargue Archivo</h1>'))}))
         
-        if(is.null(arc_exel)){
-          return(HTML('<h1>Cargue Archivo</h1>'))}
+        fluidPage(box(if(is.null(arc_exel)){
+          return(HTML('<h1>Cargue Archivo</h1>'))}))
+      
         
         
         fluidPage(box(
