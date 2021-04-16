@@ -46,6 +46,6 @@ ui <- fluidPage(#Leo
                              fluidPage(box(width = 12,HTML('<h1 style=" color:blue">Cambios Generados Por La Aplicación</h1>'))),
                              fluidPage(htmlOutput("texto")))
                    )
-                   
+                   #
                  )
   ))
