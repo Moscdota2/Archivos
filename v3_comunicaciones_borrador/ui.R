@@ -32,8 +32,7 @@ ui <- fluidPage(#Leo
                        htmlOutput('carga_datos'),
                        box(solidHeader = T, width = 12, 
                            column(12, align="center",
-                                  actionButton(inputId = 'bot', label = 'Aceptar'),
-                                  actionButton(inputId = 'bot2', label = 'Regresar'))),
+                                  actionButton(inputId = 'bot', label = 'Aceptar', icon('retweet')))),
                        
                        
                        

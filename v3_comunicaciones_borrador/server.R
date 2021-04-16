@@ -6,11 +6,11 @@ library(dplyr)
 
 
 source('funcion_limpieza.R')
+source('fun_validate_archivos.R')
 
 shinyServer(function(input, output) {
   
-    ####### Pagina 1
-    #######
+    ####### Pagina 1#######
       #Vista de imagen Leo
       output$alcaravan_png <- renderImage({
           list(src = 'WWW/photo_2021-04-12_13-37-57.jpg',
@@ -30,24 +30,27 @@ shinyServer(function(input, output) {
     
     ##############################################################################
     output$file <- renderDataTable({
-        tryCatch({
-            grt <- read_xlsx(input$fileid$datapath, sheet = '2021')
-            grt
-        },
+        
+      tryCatch({
+          lol <- input$fileid$datapath
+          print(archivo_xlsx(lol))
+          
+          },
         
         error = function(err){
-            NULL
+             NULL
         },
         
         finally ={}
-        
-        )
+      )
     })
 
     output$fie <- renderDataTable({
         
         tryCatch({
-            nub <- read.csv(input$fileid2$datapath, stringsAsFactors = F)
+            nub <- input$fileid2$datapath
+            print(archivo_csv(nub))
+        
         },
         
         error = function(err){
@@ -72,15 +75,25 @@ shinyServer(function(input, output) {
     output$mostrar_asuntos <- renderUI({
       
       tryCatch({
-        fluidPage(box(arc_exel <- input$fileid,
-        arc_csv <- input$fileid2))
+          arc_exel <- input$fileid
+          arc_csv <- input$fileid2
         
-        fluidPage(box(if(is.null(arc_exel)){
-          return(HTML('<h1>Cargue Archivo</h1>'))}))
         
-        fluidPage(box(if(is.null(arc_exel)){
-          return(HTML('<h1>Cargue Archivo</h1>'))}))
-      
+        if(is.null(arc_exel)){
+          return(HTML('<h1>Cargue Archivo</h1>'))}
+        
+        if(is.null(arc_csv)){
+          return(HTML('<h1>Cargue Archivo</h1>'))}
+          
+        if(is.null(archivo_xlsx(arc_exel$datapath))){
+          return(HTML('<h1>Cargue Archivo</h1>'))
+        }
+        
+        if(is.null(archivo_csv(arc_csv$datapath))){
+          return(HTML('<h1>Cargue Archivo</h1>'))
+        }
+      s
+                
         
         
         fluidPage(box(
