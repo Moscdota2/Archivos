@@ -4,8 +4,7 @@ library(shinyjs)
 library(readxl)
 library(dplyr)
 
-
-ui <- fluidPage(#Leo
+ui <- fluidPage(
   useShinyjs(),
   dashboardPage(skin = 'black',
                 dashboardHeader(title = "Devolución a Borrador"),
@@ -44,6 +43,6 @@ ui <- fluidPage(#Leo
                              fluidPage(box(width = 12,HTML('<h1 style=" color:blue">Cambios Generados Por La Aplicación</h1>'))),
                              fluidPage(htmlOutput("texto")))
                    )
-                   #
+                   
                  )
   ))

@@ -1,4 +1,3 @@
-#Estandarizamos los títulos de las columnas del dataframe
 func_titulo <- function(df){
   
   titulo <- colnames(df)
@@ -8,17 +7,11 @@ func_titulo <- function(df){
   c3 <- gsub('[[:space:]]', '_', c2)
   ccf <- gsub('[[:punct:]]', '_', c3)
   ccf <- gsub('_{2,}', '_', ccf)
-
-   
   return(ccf)
-  
 }
 
-#Estandarizamos el cuerpo de los datos de las filas y columnas del dataframe
 func_limpieza <- function(data){
-
 names(data)<- func_titulo(data)
-
 data <- data %>% 
   mutate(motivo_1 = trimws(motivo_1),
          motivo_2 = trimws(motivo_2),
@@ -50,13 +43,9 @@ data <- data %>%
          motivo_3 = gsub('_{2,}', ' ', motivo_3),
          motivo_4 = gsub('_{2,}', ' ', motivo_4),
          motivo_5 = gsub('_{2,}', ' ', motivo_5))
-
 return(data)
 }
-
 load('comparadorjuntos.RData')
-
 if(file_test('-f', 'caches.RData')){
   load('caches.RData')
 }
-
