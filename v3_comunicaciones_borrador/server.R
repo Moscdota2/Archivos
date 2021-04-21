@@ -73,37 +73,37 @@ shinyServer(function(input, output) {
     
     output$mostrar_asuntos <- renderUI({
       
+      arc_exel <- input$fileid
+      arc_csv <- input$fileid2
+      
       tryCatch({
-        if(exists("data1")){
-          arc_exel <- data1
-          print('existe exel')
-        } else {
-          arc_exel <- input$fileid
-          print('no existe exel')
-        }
-        
-        if(exists("comparador")){
-          arc_csv <- comparador
-          print('existe csv')
-        } else {
-          arc_csv <- input$fileid2
-          print('no existe csv')
-        }
-        
-          
         
         if(is.null(arc_exel)){
-          return(HTML('<h1>Cargue Archivo</h1>'))}
-        
-        if(is.null(arc_csv)){
-          return(HTML('<h1>Cargue Archivo</h1>'))}
-          
-        if(is.null(archivo_xlsx(arc_exel$datapath))){
-          return(HTML('<h1>Cargue Archivo</h1>'))
+          if(exists("data1")){
+            arc_exel <- data1
+          } else {
+            return(HTML('<h1>Cargue Archivo</h1>'))  
+          }}
+        else {
+          if(is.null(archivo_xlsx(arc_exel$datapath))){
+            return(HTML('<h1>Cargue Archivo</h1>'))
+          } else {
+            arc_exel <- archivo_xlsx(arc_exel$datapath)
+          }
         }
         
-        if(is.null(archivo_csv(arc_csv$datapath))){
-          return(HTML('<h1>Cargue Archivo</h1>'))
+        if(is.null(arc_csv)){
+          if(exists("data1")){
+            arc_csv <- data1
+          } else {
+            return(HTML('<h1>Cargue Archivo</h1>'))  
+          }}
+        else {
+          if(is.null(archivo_csv(arc_csv$datapath))){
+            return(HTML('<h1>Cargue Archivo</h1>'))
+          } else {
+            arc_csv <- archivo_csv(arc_csv$datapath)
+          }
         }
         
         fluidPage(box(
@@ -132,67 +132,38 @@ shinyServer(function(input, output) {
       
     })
 
-    #############################################################################
-    #
-
-    ##############################################################################
-
-
-observeEvent(input$bot, {
-  toggle('mostrar_asuntos')
-  toggle('carga_datos')
-
-
-  data1 <- df1()
-
-  comparadorjuntos <- comparadorjuntos1()
-
-  comparador <- comparador1()
-
-  proyectos_en_evaluacion <- proyectos_en_evaluacion1()
-
-  resumen_estandar <- resumen_estandar1()
-
-  resumen_respondida <- resumen_respondida1()
-
-  save(comparador, comparadorjuntos , data1, resumen_estandar,
-       resumen_respondida, proyectos_en_evaluacion, file = 'caches.RData')
-
-  })
     
+    observeEvent(input$bot, {
+     
+        data1 <- df1()
+        comparadorjuntos <- comparadorjuntos1()
+        comparador <- comparador1()
+        proyectos_en_evaluacion <- proyectos_en_evaluacion1()
+        resumen_estandar <- resumen_estandar1()
+        resumen_respondida <- resumen_respondida1()
+        
+        save(comparador, comparadorjuntos , data1, resumen_estandar,resumen_respondida, proyectos_en_evaluacion, file = 'caches.RData')
+
+        toggle('mostrar_asuntos')
+        toggle('carga_datos')
+      
     
-    observeEvent(input$bot3, {
-      
-      data1 <- df1()
-      
-      comparadorjuntos <- comparadorjuntos1()
-      
-      comparador <- comparador1()
-      
-      proyectos_en_evaluacion <- proyectos_en_evaluacion1()
-      
-      resumen_estandar <- resumen_estandar1()
-      
-      resumen_respondida <- resumen_respondida1()
-      #load('caches.RData')
-      toggle('mostrar_asuntos')
-      toggle('carga_datos')
-      
     })
-  
-    
-    ###########################
+      
+      ###########################
     
     df1 <- reactive({
-      if(exists("data1")){
+
+      if(is.null(input$fileid) && is.null(input$fileid2)){
         archivo <- data1
       } else {
+
         # CArgar archivo 1
         archivo <- read_xlsx(input$fileid$datapath, sheet = "2021")
         archivo <- func_limpieza(archivo)
         archivo <- archivo %>% filter(!is.na(codigo_proyecto))
         ####
-        
+
         # # Cargar el archivo 3 -- Comparadorjuntos
         archivo2 <- comparadorjuntos2
         
@@ -232,7 +203,7 @@ observeEvent(input$bot, {
         
         
         # Cargar el archivo 2 y filtrado por evaluacion -- comparador.csv
-        if(exists('comparador')){
+        if(is.null(input$fileid) && is.null(input$fileid2)){
           archivo3 <- comparador 
         } else {
           archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
@@ -265,7 +236,7 @@ observeEvent(input$bot, {
     comparador1 <- reactive({
       
       # Cargar el archivo 2 y filtrado por evaluacion -- comparador.csv
-      if(exists('comparador')){
+      if(is.null(input$fileid) && is.null(input$fileid2)){
         archivo3 <- comparador
       }else{
         archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
@@ -282,7 +253,7 @@ observeEvent(input$bot, {
     proyectos_en_evaluacion1 <- reactive({
       
       # CArgar el archivo 2 y filtrado por evaluacion -- comparador.csv
-      if(exists('comparador')){
+      if(is.null(input$fileid) && is.null(input$fileid2)){
         archivo3 <- comparador
       }else{
         archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
@@ -301,7 +272,7 @@ observeEvent(input$bot, {
       
       
       # CArgar archivo 1
-      if(exists('resumen_estandar')){
+      if(is.null(input$fileid) && is.null(input$fileid2)){
         resumen_estandar <- resumen_estandar
       }else{
         archivo <- read_xlsx(input$fileid$datapath, sheet = '2021')
@@ -362,7 +333,7 @@ observeEvent(input$bot, {
     resumen_respondida1 <- reactive({
       
       # CArgar archivo 1
-      if(exists('resumen_respondida')){
+      if(is.null(input$fileid) && is.null(input$fileid2)){
         resumen_respondida <- resumen_respondida
       } else {
         archivo <- read_xlsx(input$fileid$datapath, sheet = '2021')
