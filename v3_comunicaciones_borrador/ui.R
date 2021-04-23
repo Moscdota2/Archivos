@@ -14,7 +14,8 @@ ui <- fluidPage(
                                   menuItem("Información", tabName = "info", icon = icon("envelope")),
                                   menuItem("Data Borrador", tabName = "borrador",icon = icon("folder-open")),
                                   menuItem("Data Códigos SINCO", tabName = "code_sinco", icon = icon("folder-open")),
-                                  menuItem("Acciones hechas por el programa", tabName = 'pasos', icon = icon("info"))
+                                  menuItem("Acciones hechas por el programa", tabName = 'pasos', icon = icon("info")),
+                                  menuItem('Alerta', tabName = 'alertaui', icon = icon('warning'))
                                   )
                                  ),
                 dashboardBody(
@@ -41,8 +42,18 @@ ui <- fluidPage(
                              dataTableOutput('fie')),
                      tabItem(tabName = 'pasos',
                              fluidPage(box(width = 12,HTML('<h1 style=" color:blue">Cambios Generados Por La Aplicación</h1>'))),
-                             fluidPage(htmlOutput("texto")))
+                             fluidPage(htmlOutput("texto"))),
+                     tabItem(tabName = 'alertaui',
+                             fluidPage(box(width = 12,
+                               HTML('<h1>Alerta</h1>')
+                             )),
+                             fluidPage(box(width = 12,
+                                          htmlOutput('alerta'),
+                                          actionButton(inputId = 'botalerta', label = 'Aceptar'))),
+                             hidden(htmlOutput('alerta2'))
+                             
+                     )
                    )
                    
                  )
-  ))
+  )) 

@@ -3,31 +3,33 @@ library(shinydashboard)
 library(shinyjs)
 library(readxl)
 library(dplyr)
+library(lubridate)
+library(tidyr)
 
 source('funcion_limpieza.R')
 source('fun_validate_archivos.R')
+source('funcion_alerta.R')
 
 shinyServer(function(input, output) {
 
-      output$alcaravan_png <- renderImage({
+  output$alcaravan_png <- renderImage({
           list(src = 'WWW/photo_2021-04-12_13-37-57.jpg',
                width = 600)
       })
       
-      output$sinco_png <- renderImage({
+  output$sinco_png <- renderImage({
           list(src = 'WWW/logo_sinco.png',
                width = 600)
         })
 
-      output$titulo <- renderUI({
+  output$titulo <- renderUI({
           HTML('<h1>Inicio</h1>')
       })
 
-    output$file <- renderDataTable({
+  output$file <- renderDataTable({
       
       tryCatch({
           lol <- input$fileid$datapath
-          print(archivo_xlsx(lol))
           },
         error = function(err){
              NULL
@@ -37,11 +39,10 @@ shinyServer(function(input, output) {
       )
     })
 
-    output$fie <- renderDataTable({
+  output$fie <- renderDataTable({
         tryCatch({
             nub <- input$fileid2$datapath
-            print(archivo_csv(nub))
-        },
+          },
         error = function(err){
             NULL
           },
@@ -49,7 +50,7 @@ shinyServer(function(input, output) {
         )
     })
 
-    output$carga_datos <- renderUI({
+  output$carga_datos <- renderUI({
       fluidPage(
         box(fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel", accept = '.xlsx'),
         fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP', accept = '.csv'),
@@ -57,7 +58,54 @@ shinyServer(function(input, output) {
         )
       })
     
-    output$mostrar_asuntos <- renderUI({
+  output$alerta <- renderUI({
+      fluidPage(
+        box(fileInput(inputId = 'alerta_arc', label = 'Elija el Archivo CSV', accept = '.csv'),
+            width = 6)
+      )
+    })
+
+  botalertareaccion <- eventReactive(input$botalerta, {
+      func_alerta(input$alerta_arc$datapath)
+    })
+  
+  observeEvent(input$botalerta, {
+      toggle('alerta2')
+    })
+    
+  output$alerta2 <- renderUI({
+    a1 <- input$alerta_arc
+    tryCatch({
+      if(is.null(a1)){
+        HTML('<h1>Cargue Archivo</h1>')
+      } else{
+        if(is.null(archivo_csv(input$alerta_arc$datapath))){
+          HTML('<h1>Cargue Archivo Bien</h1>')
+        } else{
+          fluidPage(
+          splitLayout(
+            box(width = 12,
+                dataTableOutput(outputId = 'alertadf')),
+            box(width = 12,
+                plotOutput(outputId = 'grafica'))
+          )
+        )
+      }
+    } 
+    }, 
+      finally = {})
+    })
+    
+  output$grafica <- renderPlot({
+      x <- botalertareaccion()
+      boxplot(x$n)
+    })
+    
+  output$alertadf <- renderDataTable({
+      botalertareaccion()
+    })
+
+  output$mostrar_asuntos <- renderUI({
       
       arc_exel <- input$fileid
       arc_csv <- input$fileid2
@@ -113,19 +161,19 @@ shinyServer(function(input, output) {
       },error = function(err){return(HTML('<h1>Error</h1>'))}, finally = {})
     })
     
-    observeEvent(input$bot, {
+  observeEvent(input$bot, {
         data1 <- df1()
         comparadorjuntos <- comparadorjuntos1()
         comparador <- comparador1()
         proyectos_en_evaluacion <- proyectos_en_evaluacion1()
         resumen_estandar <- resumen_estandar1()
         resumen_respondida <- resumen_respondida1()
-        save(comparador, comparadorjuntos , data1, resumen_estandar,resumen_respondida, proyectos_en_evaluacion, file = 'caches.RData')
+        save(comparador, comparadorjuntos , data1, resumen_estandar,resumen_respondida, proyectos_en_evaluacion, file = './caches.RData')
         toggle('mostrar_asuntos')
         toggle('carga_datos')
     })
     
-    df1 <- reactive({
+  df1 <- reactive({
 
       if(is.null(input$fileid) && is.null(input$fileid2)){
         archivo <- data1
@@ -170,10 +218,10 @@ shinyServer(function(input, output) {
         archivo <- archivo %>% mutate(estatus_valido = if_else(codigo_proyecto %in% proyectos_en_evaluacion, FALSE,TRUE))
       }
       archivo
-
+      dataTableOutput
     })
     
-    comparador1 <- reactive({
+  comparador1 <- reactive({
       
       if(is.null(input$fileid) && is.null(input$fileid2)){
         archivo3 <- comparador
@@ -185,7 +233,7 @@ shinyServer(function(input, output) {
       
     })
     
-    proyectos_en_evaluacion1 <- reactive({
+  proyectos_en_evaluacion1 <- reactive({
   
       if(is.null(input$fileid) && is.null(input$fileid2)){
         archivo3 <- comparador
@@ -199,7 +247,7 @@ shinyServer(function(input, output) {
       
     })
     
-    resumen_estandar1 <- reactive({
+  resumen_estandar1 <- reactive({
      
       if(is.null(input$fileid) && is.null(input$fileid2)){
         resumen_estandar <- resumen_estandar
@@ -237,7 +285,7 @@ shinyServer(function(input, output) {
       
     })
     
-    resumen_respondida1 <- reactive({
+  resumen_respondida1 <- reactive({
 
       if(is.null(input$fileid) && is.null(input$fileid2)){
         resumen_respondida <- resumen_respondida
@@ -275,7 +323,7 @@ shinyServer(function(input, output) {
       
     })
     
-    comparadorjuntos1 <- reactive({
+  comparadorjuntos1 <- reactive({
 
       archivo2 <- comparadorjuntos2
       archivo2 <- archivo2 %>% mutate(Asuntos_origen = Asunto)
@@ -293,7 +341,7 @@ shinyServer(function(input, output) {
       
     })
     
-    output$texto <- renderUI({
+  output$texto <- renderUI({
         box(HTML('<p>
             1-Utilizamos la función de estandarización para los títulos de la data y los mostramos.<br>
             2-Llamamos otra data con datos "fiables" de códigos <b>OBPP</b> para comparar.<br>
@@ -315,7 +363,7 @@ shinyServer(function(input, output) {
         </p>'))
     })
    
-    output$descarga_no_estandar <- downloadHandler(
+  output$descarga_no_estandar <- downloadHandler(
       
       filename = function() {
         paste("comunicacionesNoEstandar.csv", sep="")
@@ -327,7 +375,7 @@ shinyServer(function(input, output) {
       }
     )
     
-    output$descarga_evaluados <- downloadHandler(
+  output$descarga_evaluados <- downloadHandler(
       
       filename = function() {
         paste("comunicacionesEvaluadosYA.csv", sep="")
@@ -341,7 +389,7 @@ shinyServer(function(input, output) {
       }
     )
     
-    output$estatus <- renderUI({
+  output$estatus <- renderUI({
       resumen_respondida <- resumen_respondida1()
         HTML(paste('<b>No Respondidas</b>:',
                    as.numeric(resumen_respondida[resumen_respondida$respondida == 'No respondida', 'Proyectos']),
@@ -349,7 +397,7 @@ shinyServer(function(input, output) {
                    as.numeric(resumen_respondida[resumen_respondida$respondida == 'Respondida', 'Proyectos'])))
     })
     
-    output$estandar <- renderUI({
+  output$estandar <- renderUI({
       resumen_estandar <- resumen_estandar1()
         HTML(paste('<b>No estandar</b>:',
                    as.numeric(resumen_estandar[resumen_estandar$estandar == FALSE, 'Proyectos']),
@@ -357,7 +405,7 @@ shinyServer(function(input, output) {
                    as.numeric(resumen_estandar[resumen_estandar$estandar == TRUE, 'Proyectos'])))
     })
        
-    output$estatus_proyecto <- renderUI({
+  output$estatus_proyecto <- renderUI({
       data1 <- df1()
       comparador <- comparador1()
         data_aux <- data1 %>% filter(respondida != 'Respondida') %>% pull(codigo_proyecto)
@@ -372,11 +420,11 @@ shinyServer(function(input, output) {
         ))
     })
        
-    output$titulo2 <- renderUI({
+  output$titulo2 <- renderUI({
         HTML('<h1 style="color: blue">RESPUESTAS PARA “ESTATUS BORRADOR”.</h1>')
     })
     
-    output$comunicacion2 <- renderUI({
+  output$comunicacion2 <- renderUI({
       
       data1 <- df1()
       comparador <- comparador1()
@@ -419,7 +467,7 @@ shinyServer(function(input, output) {
         HTML(texto_html)
     }) 
     
-    output$respuestas_estandar <- renderUI({
+  output$respuestas_estandar <- renderUI({
         data1 <- df1()
         opciones <- data1 %>% filter(respondida == 'No respondida',
                                     codigo_valido == TRUE, estatus_valido == TRUE, estandar == TRUE) %>%  pull(clave)
