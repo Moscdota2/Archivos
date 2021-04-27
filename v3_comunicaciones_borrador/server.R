@@ -6,11 +6,12 @@ library(dplyr)
 library(lubridate)
 library(tidyr)
 
-source('funcion_limpieza.R')
-source('fun_validate_archivos.R')
-source('funcion_alerta.R')
-
 shinyServer(function(input, output) {
+
+  source('funcion_limpieza.R')
+  source('fun_validate_archivos.R')
+  source('funcion_alerta.R')
+
 
   output$alcaravan_png <- renderImage({
           list(src = 'WWW/photo_2021-04-12_13-37-57.jpg',
@@ -26,28 +27,12 @@ shinyServer(function(input, output) {
           HTML('<h1>Inicio</h1>')
       })
 
-  output$file <- renderDataTable({
-      
-      tryCatch({
-          lol <- input$fileid$datapath
-          },
-        error = function(err){
-             NULL
-        },
-        
-        finally ={}
-      )
+  output$file <- renderDT({
+      tryCatch({archivo_xlsx(input$fileid$datapath)}, error = function(err){NULL}, finally = {})      
     })
 
-  output$fie <- renderDataTable({
-        tryCatch({
-            nub <- input$fileid2$datapath
-          },
-        error = function(err){
-            NULL
-          },
-        finally ={}
-        )
+  output$fie <- renderDT({
+        tryCatch({archivo_csv(input$fileid2$datapath)}, error = function(err){NULL},finally ={})
     })
 
   output$carga_datos <- renderUI({
@@ -85,7 +70,7 @@ shinyServer(function(input, output) {
           fluidPage(
           splitLayout(
             box(width = 12,
-                dataTableOutput(outputId = 'alertadf')),
+                DTOutput(outputId = 'alertadf')),
             box(width = 12,
                 plotOutput(outputId = 'grafica'))
           )
@@ -101,7 +86,7 @@ shinyServer(function(input, output) {
       boxplot(x$n)
     })
     
-  output$alertadf <- renderDataTable({
+  output$alertadf <- renderDT({
       botalertareaccion()
     })
 

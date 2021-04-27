@@ -3,6 +3,10 @@ library(shinydashboard)
 library(shinyjs)
 library(readxl)
 library(dplyr)
+library(tidyr)
+library(lubridate)
+library(tidyr)
+library(DT)
 
 ui <- fluidPage(
   useShinyjs(),
@@ -37,9 +41,9 @@ ui <- fluidPage(
                       hidden(htmlOutput('mostrar_asuntos'))
                      ),
                      tabItem(tabName = 'borrador', 
-                             dataTableOutput('file')),
+                             DTOutput('file')),
                      tabItem('code_sinco', 
-                             dataTableOutput('fie')),
+                             DTOutput('fie')),
                      tabItem(tabName = 'pasos',
                              fluidPage(box(width = 12,HTML('<h1 style=" color:blue">Cambios Generados Por La Aplicación</h1>'))),
                              fluidPage(htmlOutput("texto"))),
