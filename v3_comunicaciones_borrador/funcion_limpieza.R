@@ -46,6 +46,6 @@ data <- data %>%
 return(data)
 }
 load('comparadorjuntos.RData')
-if(file_test('-f', 'caches.RData')){
-  load('caches.RData')
+if(file_test('-f', './caches.RData')){
+  load('./caches.RData')
 }

@@ -218,7 +218,6 @@ shinyServer(function(input, output) {
         archivo <- archivo %>% mutate(estatus_valido = if_else(codigo_proyecto %in% proyectos_en_evaluacion, FALSE,TRUE))
       }
       archivo
-      dataTableOutput
     })
     
   comparador1 <- reactive({
