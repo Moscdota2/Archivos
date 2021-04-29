@@ -83,7 +83,8 @@ shinyServer(function(input, output) {
     
   output$grafica <- renderPlot({
       x <- botalertareaccion()
-      boxplot(x$n)
+      hist(x$n, main = 'Histograma de "Casos Atípicos"',
+        xlab = 'Proyectos OBPP', ylab = 'Frecuencia')
     })
     
   output$alertadf <- renderDT({
