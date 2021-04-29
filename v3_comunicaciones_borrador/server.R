@@ -85,6 +85,7 @@ shinyServer(function(input, output) {
       x <- botalertareaccion()
       hist(x$n, main = 'Histograma de "Casos Atípicos"',
         xlab = 'Proyectos OBPP', ylab = 'Frecuencia')
+      #
     })
     
   output$alertadf <- renderDT({
