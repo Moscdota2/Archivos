@@ -21,7 +21,7 @@ shinyServer(function(input, output) {
   output$sinco_png <- renderImage({
           list(src = 'WWW/logo_sinco.png',
                width = 600)
-        })
+        })L
 
   output$titulo <- renderUI({
           HTML('<h1>Inicio</h1>')
