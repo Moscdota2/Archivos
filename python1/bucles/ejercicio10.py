@@ -15,3 +15,6 @@ if i == num:
     print(str(num) + 'Es primo')
 else:
     print(str(num + 'No es primo')
+
+#ojo esta función no quiere agarrar, no sé por qué, tengo
+#que investigar.
