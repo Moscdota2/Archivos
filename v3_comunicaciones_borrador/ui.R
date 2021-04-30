@@ -17,7 +17,7 @@ ui <- fluidPage(
                                   menuItem("Inicio", tabName = "inicio", icon = icon("home")),
                                   menuItem("Información", tabName = "info", icon = icon("envelope")),
                                   menuItem("Data Borrador", tabName = "borrador",icon = icon("folder-open")),
-                                  menuItem("Data Códigos SINCO", tabName = "code_sinco", icon = icon("folder-open")),
+                                  menuItem("Data Proyectos SINCO", tabName = "code_sinco", icon = icon("folder-open")),
                                   menuItem("Acciones hechas por el programa", tabName = 'pasos', icon = icon("info")),
                                   menuItem('Alerta', tabName = 'alertaui', icon = icon('warning'))
                                   )

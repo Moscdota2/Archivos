@@ -19,16 +19,10 @@ func_alerta <- function(x){
   resumen_borrador <- resumen %>% 
     filter(project_timeline_ids.descripcion == 'Borrador')
   
-  # mean(resumen_borrador$n)
-  # hist(resumen_borrador$n)
-  # boxplot(resumen_borrador$n)
-  
   cuantil<- quantile(resumen_borrador$n,  probs = seq(0, 1, 0.05))
   
   alerta <- resumen_borrador %>% filter(n >= cuantil['95%'])
   
-  return(alerta)
-  
-  
+  return(alerta)  
 
 }
