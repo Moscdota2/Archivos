@@ -1,20 +1,11 @@
-# num = int(input('Ingresa el numero: '))
-# i = 2
-# while num % i != 0:
-#     i += 1
-# if i == num:
-#     print(str(num) + 'Es primo')
-# else:
-#     print(str(num + 'No es primo')
-
-num = int(input('Ingresa el numero: '))
-i = 2
-while num % i != 0:
-    i += 1
-if i == num:
-    print(str(num) + 'Es primo')
-else:
-    print(str(num + 'No es primo')
+n = int(input("Introduce un número entero positivo mayor que 2: "))
+#for i in range(2, n):
+#    if n % i == 0:
+#        break
+#if (i + 1)  == n:
+#    print(str(n) + " es primo")
+#else: 
+#    print(str(n) + " no es primo")
 
 #ojo esta función no quiere agarrar, no sé por qué, tengo
 #que investigar.
