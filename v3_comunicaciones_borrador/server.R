@@ -38,7 +38,7 @@ shinyServer(function(input, output) {
   output$carga_datos <- renderUI({
       fluidPage(
         box(fileInput(inputId = 'fileid', label = "Elija el Archivo de Borrador .Excel", accept = '.xlsx'),
-        fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP', accept = '.csv'),
+        #fileInput(inputId = 'fileid2', label = 'Elija el Archivo CSV de los códigos de las OBPP', accept = '.csv'),
         width = 6)
         )
       })
