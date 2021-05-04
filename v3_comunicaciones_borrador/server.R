@@ -5,13 +5,15 @@ library(readxl)
 library(dplyr)
 library(lubridate)
 library(tidyr)
+library(DBI)
+library(RPostgreSQL)
 
 shinyServer(function(input, output) {
 
   source('funcion_limpieza.R')
   source('fun_validate_archivos.R')
   source('funcion_alerta.R')
-
+  source('funcion_sql.R')
 
   output$alcaravan_png <- renderImage({
           list(src = 'WWW/photo_2021-04-12_13-37-57.jpg',
@@ -32,7 +34,7 @@ shinyServer(function(input, output) {
     })
 
   output$fie <- renderDT({
-        tryCatch({archivo_csv(input$fileid2$datapath)}, error = function(err){NULL},finally ={})
+        tryCatch({funcion_sql()}, error = function(err){NULL},finally ={})
     })
 
   output$carga_datos <- renderUI({
@@ -95,7 +97,7 @@ shinyServer(function(input, output) {
   output$mostrar_asuntos <- renderUI({
       
       arc_exel <- input$fileid
-      arc_csv <- input$fileid2
+      #arc_csv <- input$fileid2
       
       tryCatch({
         
@@ -111,20 +113,20 @@ shinyServer(function(input, output) {
           } else {
             arc_exel <- archivo_xlsx(arc_exel$datapath)
           }
-        }
+        #}
         
-        if(is.null(arc_csv)){
-          if(exists("data1")){
-            arc_csv <- data1
-          } else {
-            return(HTML('<h1>Cargue Archivo</h1>'))  
-          }}
-        else {
-          if(is.null(archivo_csv(arc_csv$datapath))){
-            return(HTML('<h1>Cargue Archivo</h1>'))
-          } else {
-            arc_csv <- archivo_csv(arc_csv$datapath)
-          }
+        #if(is.null(arc_csv)){
+         # if(exists("data1")){
+          #  arc_csv <- data1
+          #} else {
+           # return(HTML('<h1>Cargue Archivo</h1>'))  
+          #}}
+        #else {
+         # if(is.null(archivo_csv(arc_csv$datapath))){
+          #  return(HTML('<h1>Cargue Archivo</h1>'))
+          #} else {
+           # arc_csv <- archivo_csv(arc_csv$datapath)
+          #}
         }
         
         fluidPage(box(
@@ -162,7 +164,8 @@ shinyServer(function(input, output) {
     
   df1 <- reactive({
 
-      if(is.null(input$fileid) && is.null(input$fileid2)){
+      if(is.null(input$fileid) #&& is.null(input$fileid2)
+         ){
         archivo <- data1
       } else {
         archivo <- read_xlsx(input$fileid$datapath, sheet = "2021")
@@ -189,13 +192,15 @@ shinyServer(function(input, output) {
             is.na(codigo_de_comunicacion_enviada_informacion_atencion_al_ciudadano_),
             'No respondida',
             'Respondida'))
-        if(is.null(input$fileid) && is.null(input$fileid2)){
+        if(is.null(input$fileid) #&& is.null(input$fileid2)
+           ){
           archivo3 <- comparador 
         } else {
-          archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
-          archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
+          #archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
+          #archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
+          archivo3 <- funcion_sql()
         } 
-        proyectos_en_evaluacion <- archivo3 %>% filter(state %in% 'En evaluación') %>% pull(code)
+        proyectos_en_evaluacion <- archivo3 %>% filter(state_proyect %in% 'En evaluación') %>% pull(code)
         archivo <- archivo %>% mutate(codigo_proyecto = gsub('[[:cntrl:]]','',codigo_proyecto)) %>%
           mutate(codigo_proyecto = trimws(codigo_proyecto))
         archivo$codigo_valido <- grepl('^CCO-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{2}-[[:digit:]]{5}',
@@ -209,11 +214,13 @@ shinyServer(function(input, output) {
     
   comparador1 <- reactive({
       
-      if(is.null(input$fileid) && is.null(input$fileid2)){
+      if(is.null(input$fileid) # && is.null(input$fileid2)
+         ){
         archivo3 <- comparador
       } else {
-        archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
-        archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
+        archivo3 <- funcion_sql()
+          #read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
+        #archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
       }
       archivo3
       
@@ -221,13 +228,15 @@ shinyServer(function(input, output) {
     
   proyectos_en_evaluacion1 <- reactive({
   
-      if(is.null(input$fileid) && is.null(input$fileid2)){
+      if(is.null(input$fileid) #&& is.null(input$fileid2)
+         ){
         archivo3 <- comparador
       } else {
-        archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
-        archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
+        # archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
+        # archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
+        archivo3 <- funcion_sql()
       }
-      proyectos_en_evaluacion <- archivo3 %>% filter(state %in% 'En evaluación') %>% pull(code)
+      proyectos_en_evaluacion <- archivo3 %>% filter(state_proyect %in% 'En evaluación') %>% pull(code)
       
       proyectos_en_evaluacion
       
@@ -235,7 +244,8 @@ shinyServer(function(input, output) {
     
   resumen_estandar1 <- reactive({
      
-      if(is.null(input$fileid) && is.null(input$fileid2)){
+      if(is.null(input$fileid) #&& is.null(input$fileid2)
+         ){
         resumen_estandar <- resumen_estandar
       } else {
         archivo <- read_xlsx(input$fileid$datapath, sheet = '2021')
@@ -273,7 +283,8 @@ shinyServer(function(input, output) {
     
   resumen_respondida1 <- reactive({
 
-      if(is.null(input$fileid) && is.null(input$fileid2)){
+      if(is.null(input$fileid) #&& is.null(input$fileid2)
+         ){
         resumen_respondida <- resumen_respondida
       } else {
         archivo <- read_xlsx(input$fileid$datapath, sheet = '2021')
@@ -370,7 +381,7 @@ shinyServer(function(input, output) {
         data1 <- df1()
         comparador <- comparador1()
         codigos <- data1 %>% filter(respondida == 'No respondida') %>% pull(codigo_proyecto)
-        data_descarga <- comparador %>% filter(code %in% codigos, state == 'En evaluación')
+        data_descarga <- comparador %>% filter(code %in% codigos, state_proyect == 'En evaluación')
         write.csv(data_descarga, file)
       }
     )
@@ -396,13 +407,13 @@ shinyServer(function(input, output) {
       comparador <- comparador1()
         data_aux <- data1 %>% filter(respondida != 'Respondida') %>% pull(codigo_proyecto)
         data_aux <- data_aux[!is.na(data_aux)]
-        resumen_estatus <- comparador %>% filter(code %in% data_aux) %>% group_by(state) %>% tally()
+        resumen_estatus <- comparador %>% filter(code %in% data_aux) %>% group_by(state_proyect) %>% tally()
         HTML(paste('<b>No Borrador</b>:',
-                   resumen_estatus[resumen_estatus$state == 'Borrador', 'n'],'</br>',
+                   resumen_estatus[resumen_estatus$state_proyect == 'Borrador', 'n'],'</br>',
                    '<b>En Evaluacion</b>:',
-                   resumen_estatus[resumen_estatus$state == 'En evaluación', 'n'],'</br>',
+                   resumen_estatus[resumen_estatus$state_proyect == 'En evaluación', 'n'],'</br>',
                    '<b>En Preevaluacion</b>:',
-                   resumen_estatus[resumen_estatus$state == 'Pre-evaluación', 'n']
+                   resumen_estatus[resumen_estatus$state_proyect == 'Pre-evaluación', 'n']
         ))
     })
        
@@ -417,8 +428,8 @@ shinyServer(function(input, output) {
       comparadorjuntos <- comparadorjuntos1()
         data_aux <- data1 %>% filter(clave == input$in3, respondida == 'No respondida')
         nombre_obpp <- comparador %>% filter(code %in% data_aux$codigo_proyecto) %>% pull(obpp_name)
-        nombre_codigo <- comparador %>% filter(code %in% data_aux$codigo_proyecto) %>% pull(obpp_situr_code)
-        estatus_proyecto <- comparador %>% filter(code %in% data_aux$codigo_proyecto) %>% pull(state)
+        nombre_codigo <- comparador %>% filter(code %in% data_aux$codigo_proyecto) %>% pull(obpp_situr_name)
+        estatus_proyecto <- comparador %>% filter(code %in% data_aux$codigo_proyecto) %>% pull(state_proyect)
         data1 <- data1 %>% filter(clave == input$in3, estandar, codigo_valido, respondida == 'No respondida')
         motivo_1 <- comparadorjuntos %>% filter(asunto == data1$motivo_1) %>% pull(asuntos_origen)
         motivo_2 <- comparadorjuntos %>% filter(asunto == data1$motivo_2) %>% pull(asuntos_origen)
