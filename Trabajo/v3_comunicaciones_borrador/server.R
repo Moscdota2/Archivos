@@ -113,20 +113,6 @@ shinyServer(function(input, output) {
           } else {
             arc_exel <- archivo_xlsx(arc_exel$datapath)
           }
-        #}
-        
-        #if(is.null(arc_csv)){
-         # if(exists("data1")){
-          #  arc_csv <- data1
-          #} else {
-           # return(HTML('<h1>Cargue Archivo</h1>'))  
-          #}}
-        #else {
-         # if(is.null(archivo_csv(arc_csv$datapath))){
-          #  return(HTML('<h1>Cargue Archivo</h1>'))
-          #} else {
-           # arc_csv <- archivo_csv(arc_csv$datapath)
-          #}
         }
         
         fluidPage(box(
@@ -164,8 +150,7 @@ shinyServer(function(input, output) {
     
   df1 <- reactive({
 
-      if(is.null(input$fileid) #&& is.null(input$fileid2)
-         ){
+      if(is.null(input$fileid)){
         archivo <- data1
       } else {
         archivo <- read_xlsx(input$fileid$datapath, sheet = "2021")
@@ -192,12 +177,9 @@ shinyServer(function(input, output) {
             is.na(codigo_de_comunicacion_enviada_informacion_atencion_al_ciudadano_),
             'No respondida',
             'Respondida'))
-        if(is.null(input$fileid) #&& is.null(input$fileid2)
-           ){
+        if(is.null(input$fileid)){
           archivo3 <- comparador 
         } else {
-          #archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
-          #archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
           archivo3 <- funcion_sql()
         } 
         proyectos_en_evaluacion <- archivo3 %>% filter(state_proyect %in% 'En evaluación') %>% pull(code)
@@ -214,13 +196,10 @@ shinyServer(function(input, output) {
     
   comparador1 <- reactive({
       
-      if(is.null(input$fileid) # && is.null(input$fileid2)
-         ){
+      if(is.null(input$fileid)){
         archivo3 <- comparador
       } else {
         archivo3 <- funcion_sql()
-          #read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
-        #archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
       }
       archivo3
       
@@ -228,12 +207,9 @@ shinyServer(function(input, output) {
     
   proyectos_en_evaluacion1 <- reactive({
   
-      if(is.null(input$fileid) #&& is.null(input$fileid2)
-         ){
+      if(is.null(input$fileid)){
         archivo3 <- comparador
       } else {
-        # archivo3 <- read.csv(input$fileid2$datapath, stringsAsFactors = FALSE)
-        # archivo3 <- archivo3 %>% select(code, obpp_situr_code, obpp_name,state )
         archivo3 <- funcion_sql()
       }
       proyectos_en_evaluacion <- archivo3 %>% filter(state_proyect %in% 'En evaluación') %>% pull(code)
@@ -244,8 +220,7 @@ shinyServer(function(input, output) {
     
   resumen_estandar1 <- reactive({
      
-      if(is.null(input$fileid) #&& is.null(input$fileid2)
-         ){
+      if(is.null(input$fileid)){
         resumen_estandar <- resumen_estandar
       } else {
         archivo <- read_xlsx(input$fileid$datapath, sheet = '2021')
@@ -283,8 +258,7 @@ shinyServer(function(input, output) {
     
   resumen_respondida1 <- reactive({
 
-      if(is.null(input$fileid) #&& is.null(input$fileid2)
-         ){
+      if(is.null(input$fileid)){
         resumen_respondida <- resumen_respondida
       } else {
         archivo <- read_xlsx(input$fileid$datapath, sheet = '2021')
@@ -315,9 +289,7 @@ shinyServer(function(input, output) {
           mutate(codigo_proyecto = trimws(codigo_proyecto))
         resumen_respondida <- archivo %>% group_by(respondida) %>% tally(name = 'Proyectos')
       }
-      
       resumen_respondida
-      
     })
     
   comparadorjuntos1 <- reactive({
