@@ -1,17 +1,6 @@
-library(lubridate)
-library(dplyr)
-library(tidyr)
-library(leaflet)
-library(sp)
-library(rgdal)
-library(tidyverse)
-library(sf)
-
-data <- read.csv('Escritorio/sico.csv', stringsAsFactors = FALSE)
-data_historial <- read.csv('Escritorio/sico2.csv', stringsAsFactors = FALSE)
-
-source('Trabajo/funcion_latlong.R')
-
+source('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/funcion_latlong.R')
+data <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico.csv', stringsAsFactors = FALSE)
+data_historial <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico2.csv', stringsAsFactors = FALSE)
 
 data_historial[data_historial$code == '', 'code'] <- NA
 
@@ -62,29 +51,32 @@ coord <- funcion.utm.LatLong2(huso = data2$utm_zone_id.id, este = data2$utm_east
 
 data2 <- data2 %>% cbind(coord)
 
+data2[data2$obpp_estado == 'MONAGAS',]
+unique(data2$obpp_estado)
+#dataz <- data2 %>% filter(obpp_estado %in% c("ZULIA","GUÁRICO"))
 
-dataz <- data2 %>% filter(obpp_estado %in% c("ZULIA","GUÁRICO"))
+color <- if_else(data2$firmados_true, 'red', if_else(data2$retrasados,'#B725CB','blue'))
+popup_mapa <- paste('<b>Proyecto: </b>',data2$project_ids.display_name)
 
-color <- if_else(dataz$firmados_true, 'red', if_else(dataz$retrasados,'#B725CB','blue'))
-popup_mapa <- paste('<b>Proyecto: </b>',dataz$project_ids.display_name)
+save(data2, data, data_historial_apro, data_historial_edd, resta_firmados, resta_nofirmados, coord, data_historial, color, popup_mapa, file = 'datas.RData')
+
+# mapa <- leaflet() %>%
+#   setView(lng = -66.58973, lat = 6.42375, zoom =5.5) %>%
+#   addTiles() %>%
+#   addCircleMarkers(
+#     lng = data2$long, 
+#     lat = data2$lat,
+#     color = color, 
+#     label = data2$firmados_true, 
+#     popup = popup_mapa,
+#     stroke = FALSE,
+#     fillOpacity = 0.8)
+# 
 
 
-mapa <- leaflet() %>%
-  setView(lng = -66.58973, lat = 6.42375, zoom =5.5) %>%
-  addTiles() %>%
-  addCircleMarkers(
-    lng = dataz$long, 
-    lat = dataz$lat,
-    color = color, 
-    label = dataz$firmados_true, 
-    popup = popup_mapa,
-    stroke = FALSE,
-    fillOpacity = 0.8)
 
-
-mapa
-
-# por estado, por mes de aprobación y si los que están retrasados
+# por estado (selectinput)
+# por mes de aprobación y si los que están retrasados (radiobottom)
 # shiny dashboard
 # mas nada
 #
