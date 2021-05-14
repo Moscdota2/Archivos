@@ -1,6 +1,16 @@
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(leaflet)
+library(sp)
+library(rgdal)
+library(tidyverse)
+library(sf)
+
+
 source('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/funcion_latlong.R')
 data <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico.csv', stringsAsFactors = FALSE)
-data_historial <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico2.csv', stringsAsFactors = FALSE)
+data_historial <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados//sico2.csv', stringsAsFactors = FALSE)
 
 data_historial[data_historial$code == '', 'code'] <- NA
 
@@ -41,42 +51,55 @@ data2 <- data2 %>% mutate(firmados_true =
 
 data2 <- data2 %>% mutate(mes = month(data2$fecha_apro))
 
+data2 <- data2 %>% filter(!is.na(fecha_apro))
+
 
 
 data2$utm_zone_id.id <- gsub('sinco_project.','',data2$utm_zone_id.id)
 data2$utm_zone_id.id <- as.numeric(data2$utm_zone_id.id)
 
+estados <- c("GENERAL",
+             "AMAZONAS",
+             "ANZOÁTEGUI",
+             "APURE",
+             "ARAGUA",
+             "BARINAS",
+             "BOLÍVAR",
+             "CARABOBO",
+             "COJEDES",
+             "DISTRITO CAPITAL",
+             "FALCÓN",
+             "GUÁRICO",
+             "LARA",
+             "MÉRIDA",
+             "MIRANDA",
+             "MONAGAS",
+             "NUEVA ESPARTA",
+             "PORTUGUESA",
+             "SUCRE",
+             "TÁCHIRA",
+             "TRUJILLO",
+             "YARACUY",
+             "ZULIA")
+ 
 
 coord <- funcion.utm.LatLong2(huso = data2$utm_zone_id.id, este = data2$utm_east, norte = data2$utm_north)
 
 data2 <- data2 %>% cbind(coord)
 
-data2[data2$obpp_estado == 'MONAGAS',]
-unique(data2$obpp_estado)
-#dataz <- data2 %>% filter(obpp_estado %in% c("ZULIA","GUÁRICO"))
-
 color <- if_else(data2$firmados_true, 'red', if_else(data2$retrasados,'#B725CB','blue'))
 popup_mapa <- paste('<b>Proyecto: </b>',data2$project_ids.display_name)
 
-save(data2, data, data_historial_apro, data_historial_edd, resta_firmados, resta_nofirmados, coord, data_historial, color, popup_mapa, file = 'datas.RData')
+save(data2,
+     data,
+     data_historial_apro,
+     data_historial_edd,
+     resta_firmados,
+     resta_nofirmados,
+     coord,
+     data_historial,
+     color,
+     popup_mapa,
+     estados,
+     file = '1datas.RData')
 
-# mapa <- leaflet() %>%
-#   setView(lng = -66.58973, lat = 6.42375, zoom =5.5) %>%
-#   addTiles() %>%
-#   addCircleMarkers(
-#     lng = data2$long, 
-#     lat = data2$lat,
-#     color = color, 
-#     label = data2$firmados_true, 
-#     popup = popup_mapa,
-#     stroke = FALSE,
-#     fillOpacity = 0.8)
-# 
-
-
-
-# por estado (selectinput)
-# por mes de aprobación y si los que están retrasados (radiobottom)
-# shiny dashboard
-# mas nada
-#

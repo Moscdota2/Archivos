@@ -28,15 +28,30 @@ ui <- fluidPage(
                     tabItem(
                       tabName = 'info',
                       htmlOutput('carga_datos'),
-                      box(solidHeader = T, width = 12, 
-                          column(12, align="center", leafletOutput(outputId = 'mapa'))),
-                      box(solidHeader = T, width =6,
-                          column(12, radioButtons(inputId = 'action', label = 'Opciones', choices = c('Proyectos'='all',
-                                                                                                      'Firmados' = 'true',
-                                                                                                      'No Firmados' = 'false',
-                                                                                                      'Retrasados ' = 'retrasado')),
-                                 selectInput(inputId = 'estados', label = 'Estados', choices = unique(data2$obpp_estado))))
-                            
+                      
+                      box(solidHeader = T, 
+                          width = 12, 
+                          leafletOutput(outputId = 'mapa'),
+                          valueBoxOutput(outputId = 'valores')
+                          ),
+                      
+                      box(
+                        solidHeader = T, 
+                        width =6,
+                        checkboxGroupInput(inputId = 'action', label = 'Opciones', choices = c('Retrasados ' = TRUE)),
+                        checkboxGroupInput(inputId = 'action2', label = 'Firmados', choices = c('SI'=TRUE,'NO'=FALSE)),
+                        selectInput(inputId = 'estados', label = 'Estados', choices = estados, selected = 'GENERAL', multiple = TRUE),
+                        actionButton(inputId = 'mostrar_mapa', label = 'Mostrar')
+                      ),
+                      box(
+                        infoBoxOutput('proyecto'),
+                        infoBoxOutput('firnado'),
+                        infoBoxOutput('nofirmado'),
+                        infoBoxOutput('retrasado')
+                      ),
+                      box(
+                        tableOutput(outputId = 'comunicaciones')
+                      )
                     )
                   )
                   
