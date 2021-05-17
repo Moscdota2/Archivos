@@ -27,30 +27,38 @@ ui <- fluidPage(
                     ),
                     tabItem(
                       tabName = 'info',
-                      htmlOutput('carga_datos'),
+                      fluidPage(box(htmlOutput('titulo'), width = 12)),
                       
-                      box(solidHeader = T, 
-                          width = 12, 
-                          leafletOutput(outputId = 'mapa'),
-                          valueBoxOutput(outputId = 'valores')
-                          ),
-                      
-                      box(
+                      fluidPage(box(
                         solidHeader = T, 
-                        width =6,
+                        width =12,
                         checkboxGroupInput(inputId = 'action', label = 'Opciones', choices = c('Retrasados ' = TRUE)),
                         checkboxGroupInput(inputId = 'action2', label = 'Firmados', choices = c('SI'=TRUE,'NO'=FALSE)),
                         selectInput(inputId = 'estados', label = 'Estados', choices = estados, selected = 'GENERAL', multiple = TRUE),
-                        actionButton(inputId = 'mostrar_mapa', label = 'Mostrar')
+                        actionButton(inputId = 'mostrar_mapa', label = 'Mostrar'))
+                        
                       ),
-                      box(
+                      fluidPage(box(width = 12,
                         infoBoxOutput('proyecto'),
                         infoBoxOutput('firnado'),
                         infoBoxOutput('nofirmado'),
-                        infoBoxOutput('retrasado')
+                        infoBoxOutput('retrasado')),
+                        
+                        fluidPage(box(solidHeader = T, 
+                                      width = 12, 
+                                      leafletOutput(outputId = 'mapa'),
+                                      valueBoxOutput(outputId = 'valores')
+                        )),
+                        
+                        fluidPage(box(
+                          textInput('code_mapa', 'Código de Proyecto Selecionado'),
+                          actionButton(inputId = 'ver', label = 'Ver mas información')),
+                        
                       ),
-                      box(
-                        tableOutput(outputId = 'comunicaciones')
+                      fluidPage(box(width = 12,
+                        tableOutput(outputId = 'comunicaciones'))
+                      )
+                      
                       )
                     )
                   )

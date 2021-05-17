@@ -7,6 +7,7 @@ library(rgdal)
 library(tidyverse)
 library(sf)
 
+
 data_comunicaciones <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/ept_com.comunicaciones (1).csv')
 
 data_comunicacionesx <- data_comunicaciones %>%

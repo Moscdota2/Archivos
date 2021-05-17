@@ -1,10 +1,10 @@
-library(sf)
+  library(sf)
 library(leaflet)
 library(dplyr)
 library(rgdal)
 library(tidyverse)
 
-estados <- readOGR("Escritorio/Cartografia/venezuela_estados.shp")
+#estados <- readOGR("Escritorio/Cartografia/venezuela_estados.shp")
 estados2 <- read_sf("/home/analista/Trabajo/Mapas Trabajo/Estados_Venezuela.shp")
 load('/home/analista/Trabajo/Data_Mapas/salida.RData')
 

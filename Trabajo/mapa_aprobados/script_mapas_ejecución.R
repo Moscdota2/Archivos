@@ -10,7 +10,8 @@ library(sf)
 
 source('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/funcion_latlong.R')
 data <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico.csv', stringsAsFactors = FALSE)
-data_historial <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados//sico2.csv', stringsAsFactors = FALSE)
+data_historial <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico2.csv', stringsAsFactors = FALSE)
+data_petros <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/petros.csv', stringsAsFactors = F)
 
 data_historial[data_historial$code == '', 'code'] <- NA
 
@@ -89,6 +90,11 @@ data2 <- data2 %>% cbind(coord)
 
 color <- if_else(data2$firmados_true, 'red', if_else(data2$retrasados,'#B725CB','blue'))
 popup_mapa <- paste('<b>Proyecto: </b>',data2$project_ids.display_name)
+
+data_petros <- data_petros %>% rename(code = Referencia, id = External.ID, petro_amount = Monto.en.petro)
+petro_amountt <- data_petros %>%  select(petro_amount, code)
+
+data2 <- data2 %>% left_join(petro_amountt)
 
 save(data2,
      data,
