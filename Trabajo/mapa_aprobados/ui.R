@@ -6,6 +6,8 @@ library(rgdal)
 library(tidyverse)
 library(sf)
 
+source('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/funcion_latlong.R')
+
 ui <- fluidPage(
   
   dashboardPage(skin = 'black',
@@ -13,7 +15,8 @@ ui <- fluidPage(
                 dashboardSidebar(width = 260,
                                  sidebarMenu(
                                    menuItem("Inicio", tabName = "inicio", icon = icon("home")),
-                                   menuItem("Información", tabName = "info", icon = icon("envelope")))
+                                   menuItem("Información", tabName = "info", icon = icon("envelope")),
+                                   menuItem('Carga de Archivos', tabName = 'carga', icon = icon('ad')))
                                 
                 ),
                 dashboardBody(
@@ -49,18 +52,20 @@ ui <- fluidPage(
                                       leafletOutput(outputId = 'mapa'),
                                       valueBoxOutput(outputId = 'valores')
                         )),
-                        
                         fluidPage(box(
                           textInput('code_mapa', 'Código de Proyecto Selecionado'),
                           actionButton(inputId = 'ver', label = 'Ver mas información')),
-                        
                       ),
                       fluidPage(box(width = 12,
                         tableOutput(outputId = 'comunicaciones'))
                       )
-                      
                       )
+                    ),
+                    tabItem(
+                      tabName = 'carga',
+                      htmlOutput('carga_datos')
                     )
+                    
                   )
                   
                 )

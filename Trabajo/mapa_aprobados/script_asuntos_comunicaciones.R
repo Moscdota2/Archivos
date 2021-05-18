@@ -8,7 +8,7 @@ library(tidyverse)
 library(sf)
 
 
-data_comunicaciones <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/ept_com.comunicaciones (1).csv')
+data_comunicaciones <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/datas/ept_com.comunicaciones (3).csv')
 
 data_comunicacionesx <- data_comunicaciones %>%
   left_join(data2 %>% select(obpp_situr_code,fecha_apro), by=c('codigo_situr'='obpp_situr_code')) %>% 
@@ -24,4 +24,9 @@ data_comunicacionesx2 <- data_comunicacionesx %>%
 # 
 resumen_comunicaciones <- data_comunicacionesx2 %>% group_by(asunto_id2.name) %>% tally() %>% arrange(desc(n))
 
+
+archivo_csv <- function(x){
+  if(grepl('.csv$', x)){
+    return(read.csv(x, stringsAsFactors = F))
+  } else {return(NULL)}}
 

@@ -9,11 +9,9 @@ library(rgdal)
 library(tidyverse)
 library(sf)
 
-source('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/script_mapas_ejecución.R')
-load('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/1datas.RData')
+source('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/funcion_latlong.R')
 
 shinyServer(function(input, output, session) {
-  
   
   output$alcaravan_png <- renderImage({
     list(src = 'WWW/photo_2021-04-12_13-37-57.jpg',
@@ -25,10 +23,11 @@ shinyServer(function(input, output, session) {
          width = 600)
   })
   
+  #------------------------------------------#
+  
   output$proyecto <- renderInfoBox({
     
     valor <- datamapa()  %>% count()
-    
     infoBox(
       "Proyectos",
       valor,
@@ -37,14 +36,12 @@ shinyServer(function(input, output, session) {
   })
   
   output$titulo <- renderUI({
-    
     HTML('<h1 style="color: blue">Proyectos en Estatus Aprobados</h1>')
   })
   
   output$firnado <- renderInfoBox({
     
     valor <- datamapa() %>%  filter(firmados_true == TRUE) %>% count()
-    
     infoBox(
       "Firmado",
       valor,
@@ -56,8 +53,9 @@ shinyServer(function(input, output, session) {
     input$estados
     input$action
     
-    valor <- datamapa() %>%  filter(retrasados == TRUE) %>% count()
     
+    
+    valor <- datamapa() %>%  filter(retrasados == TRUE) %>% count()
     
     infoBox(
       "Retrasado",
@@ -65,22 +63,115 @@ shinyServer(function(input, output, session) {
       color = "fuchsia"
     )
     
-    
+  })
+  
+  #------------------------------------------#
+
+  observeEvent(input$bot, {
+  if(is.null(input$fileid) ||is.null(input$fileid2) || is.null(input$fileid3)){
+    print('<strong>Cargue Archivo</strong>')
+  }else{
+    data2 <- datamapa()
+    data_historial_apro <- data_h_apro()
+    data_historial_edd <- data_h_edd()
+    data_comunicacionesx <- datacomunicacionex()
+    data_comunicacionesx2 <- datacomx2()
+    resumen_comunicaciones <- dataresumen()
+    save(data2, data_historial_apro, data_historial_edd, data_comunicacionesx, data_comunicacionesx2, resumen_comunicaciones, file = './cache.RData')
+  }
+  })
+  
+  output$carga_datos <- renderUI({
+    fluidPage(
+      box(fileInput(inputId = 'fileid', label = "Cargue el archivo de los Proyectos Aprobados", accept = '.csv'),
+          fileInput(inputId = 'fileid2', label = "Cargue el archivo de la Historia", accept = '.csv'),
+          fileInput(inputId = 'fileid3', label = "Cargue el archivo de Comunicaciones", accept = '.csv'),
+          actionButton(inputId = 'bot', label = 'Aceptar', icon('retweet'))
+         )
+    )
   })
   
   resumen_comunicaciones_mapa <- reactive({
 
     situr <- datamapa() %>% select(obpp_situr_code) %>% pull(obpp_situr_code)
-    
-    resumen_comunicaciones <- data_comunicacionesx2 %>% filter(codigo_situr %in% situr) %>% group_by(asunto_id2.name) %>% tally() %>% arrange(desc(n))
-    
+    resumen_comunicaciones <- datacomx2() %>% filter(codigo_situr %in% situr) %>% group_by(asunto_id2.name) %>% tally() %>% arrange(desc(n))
     resumen_comunicaciones
     
   })
   
+  data_h_apro <- reactive({
+    if(is.null(input$fileid2)){
+      data_historial_apro <- data_historial_apro
+    } else {
+      datah <- archivo_csv(input$fileid2$datapath)
+      datah[datah$code == '', 'code'] <- NA
+      datah <- datah %>% mutate(code2 = code) %>%  fill(code)
+      datah <- datah %>% filter(project_timeline_ids.create_date != '')
+      datah <- datah %>% 
+        mutate(project_timeline_ids.create_date = ymd_hms(project_timeline_ids.create_date)) %>% 
+        mutate(project_timeline_ids.create_date =  date(project_timeline_ids.create_date))
+      
+      data_h_apro <- datah %>% 
+        filter(project_timeline_ids.descripcion == 'Proyecto Aprobado ') %>% 
+        select(code, project_timeline_ids.create_date) %>% 
+        rename(fecha_apro = project_timeline_ids.create_date) %>% 
+        distinct() %>% 
+        group_by(code) %>% 
+        summarise(fecha_apro = first(fecha_apro))
+      
+      }  
+  })
+  
+  data_h_edd <- reactive({
+    if(is.null(input$fileid2)){
+      data_historial_edd <- data_historial_edd
+    } else {
+      datah <- archivo_csv(input$fileid2$datapath)
+      datah[datah$code == '', 'code'] <- NA
+      datah <- datah %>% mutate(code2 = code) %>%  fill(code)
+      datah <- datah %>% filter(project_timeline_ids.create_date != '')
+      datah <- datah %>% 
+        mutate(project_timeline_ids.create_date = ymd_hms(project_timeline_ids.create_date)) %>% 
+        mutate(project_timeline_ids.create_date =  date(project_timeline_ids.create_date))
+
+      data_h_edd <- datah %>% filter(project_timeline_ids.descripcion %in% 'Proyecto se encuentra a la espera de Desembolso') %>% 
+        group_by(code) %>% 
+        summarise(fecha_edd = first(project_timeline_ids.create_date))
+    }
+    
+  })
+
   datamapa <- reactive({
     
-    datax <- data2
+    if(is.null(input$fileid)){
+      datax <- data2
+    } else {
+      
+      datax <- archivo_csv(input$fileid$datapath)
+      
+      datax <- datax %>% left_join(data_h_apro(), by='code') %>% left_join(data_h_edd(), by='code')
+      resta_firmados <- datax %>% mutate(firmados = fecha_edd - fecha_apro)
+      resta_nofirmados <- datax %>% mutate(tiempo_actual = today() - fecha_apro)
+      datax <- datax %>% left_join(resta_firmados) %>% left_join(resta_nofirmados)
+
+      datax <- datax %>% mutate(firmados_true =
+                                  ifelse(!is.na(firmados), T, F)) %>%
+        mutate(retrasados = ifelse(firmados_true == F & as.numeric(tiempo_actual) > (30), T, F))
+
+      datax <- datax %>% mutate(mes = month(datax$fecha_apro))
+      datax <- datax %>% filter(!is.na(fecha_apro))
+      datax$utm_zone_id.id <- gsub('sinco_project.','',datax$utm_zone_id.id)
+      datax$utm_zone_id.id <- as.numeric(datax$utm_zone_id.id)
+      coord <- funcion.utm.LatLong2(huso = datax$utm_zone_id.id, este = datax$utm_east, norte = datax$utm_north)
+      datax <- datax %>% cbind(coord)
+      color <- if_else(datax$firmados_true, 'red', if_else(datax$retrasados,'#B725CB','blue'))
+      popup_mapa <- paste('<b>Proyecto: </b>',datax$project_ids.display_name)
+
+      data_petros <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/datas/petros.csv')
+      data_petros <- data_petros %>% rename(code = Referencia, id = External.ID, petro_amount = Monto.en.petro)
+      petro_amountt <- data_petros %>%  select(petro_amount, code)
+      datax <- datax %>% left_join(petro_amountt)
+    }
     
     if(!is.null(input$action2) & !is.null(input$estados)){
       datax <- datax %>% filter(firmados_true %in% input$action2)
@@ -88,14 +179,50 @@ shinyServer(function(input, output, session) {
         datax <- datax %>% filter(obpp_estado %in% input$estados)
       }
     }
-    
     if(!is.null(input$action)){
       if(input$action == TRUE){
         datax <- datax %>% filter(retrasados %in% input$action)
       }
     }
+    
     datax
   })
+  
+  datacomunicacionex <- reactive({
+    
+    datax <- datamapa()
+    com2 <- archivo_csv(input$fileid3$datapath)
+
+    if(is.null(input$fileid3)){
+      data_comunicacionesx <- data_comunicacionesx
+    } else {
+      com1 <- com2 %>%
+        left_join(datax %>% select(obpp_situr_code,fecha_apro), by=c('codigo_situr'='obpp_situr_code')) %>%
+        filter(!is.na(fecha_apro))
+    }
+    
+  })
+  
+  datacomx2 <- reactive({
+    if(is.null(input$fileid3)){
+      data_comunicacionesx2 <- data_comunicacionesx2
+    } else {
+    com4 <- datacomunicacionex() %>% 
+      mutate(create_date = date(create_date)) %>%
+      mutate(valido = create_date > fecha_apro ) %>% 
+      filter(valido == TRUE)
+    }
+  })
+  
+  dataresumen <- reactive({
+    if(is.null(input$fileid3)){
+      resumen_comunicaciones <- resumen_comunicaciones
+    } else {
+    com3 <- datacomx2() %>% group_by(asunto_id2.name) %>% tally() %>% arrange(desc(n))
+    }
+  })
+  
+  #----------------------------------------------#
 
   output$mapa <- renderLeaflet({
 
@@ -106,21 +233,17 @@ shinyServer(function(input, output, session) {
     })
   
   output$comunicaciones <- renderTable({
-    resumen_comunicaciones_mapa()
+    dataresumen()
   })
 
   observeEvent(input$mapa_marker_click, {
     
     data_aux <- datamapa()
-    
     data_aux$lat <- round(as.numeric(data_aux$lat),6)
     data_aux$long <- round(as.numeric(data_aux$long),6)
-    
     lat_mapa = round(as.numeric(input$mapa_marker_click$lat),6)
     lng_mapa = round(as.numeric(input$mapa_marker_click$lng),6)
-    
     codigo <- data_aux %>% filter(lat == lat_mapa, long == lng_mapa) %>% pull(code)
-    
     updateTextInput(session, inputId = 'code_mapa', value = codigo)
     print(codigo)
     
@@ -129,18 +252,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$ver, {
     
     data_aux1 <- datamapa()
-    
     data_aux1 <- data_aux1 %>% filter(code %in% input$code_mapa)
-    
-    # territ <- territorial %>% filter(code %in% input$code_mapa)
-    # comun <- resumen_comunicaciones %>% filter(situr == data_aux1$obpp_situr_code) %>% pull(asunto)
-    
-    # if(length(comun) > 0){
-    #   comun <- paste0(comun, collapse = ', ')
-    # }else{
-    #   comun <- c('Sin Comunicaciones')
-    # }
-    
     showModal(modalDialog(
       title = paste("Proyecto", input$code_mapa),
       HTML(
@@ -151,8 +263,6 @@ shinyServer(function(input, output, session) {
         '<b>OBPP:</b>',data_aux1$obpp_name, '<br>',
         '<b>Estado:</b>',data_aux1$obpp_estado, '<br>',
         '<b>Municipio:</b>',data_aux1$obpp_municipio, '<br>',
-        # '<b>Rif:</b>',data_aux1$rif, '<br>',
-        # '<b>Cuenta Bancaria:</b>',data_aux1$cuenta, '<br>',
         '<hr>',
         '<b>Datos Proyecto</b>','<br>',
         '<hr>',
@@ -166,18 +276,7 @@ shinyServer(function(input, output, session) {
         '<b>Fecha Aprobacion:</b>', as.character(data_aux1$fecha_apro),'<br>',
         '<b>Firmó Convenio:</b>', data_aux1$firmados_true,'<br>',
         '<b>Fecha de Firma de Convenio:</b>', as.character(data_aux1$fecha_edd),'<br>',
-        '<hr>',
-        # '<b>Datos Comunicaciones</b>','<br>',
-        # '<hr>',
-        # # '<b>Comunicaciones:</b>', comun,'<br>',
-        # '<hr>',
-        # '<b>Datos Programación</b>','<br>',
-        # '<hr>',
-        # '<b>Fecha Programación Firma:</b>', as.character(territ$fecha_programacion_firma),'<br>',
-        # '<b>Reprogramado:</b>', as.character(territ$reprogramado),'<br>',
-        # '<b>Vocero Contactado:</b>', territ$vocero,'<br>',
-        # '<b>Fecha Contacto:</b>', as.character(territ$fecha_contacto),'<br>',
-        # '<b>Observaciones:</b>', territ$observaciones,'<br>'
+        '<hr>'
       ),
       easyClose = TRUE,
       footer = paste('Días desde Aprobación:', data_aux1$tiempo_actual)
@@ -185,14 +284,10 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  
-  
   observeEvent(input$mostrar_mapa, {
     
     datas_true <- datamapa()
-
     tryCatch({
-      
       color <- if_else(datas_true$firmados_true, 'red', if_else(datas_true$retrasados,'#B725CB','blue'))
       popup_mapa <- paste('<b>Código de proyecto: </b>',datas_true$code, '<br>',
                           '<b>Nombre del proyecto: </b>', datas_true$project_ids.display_name, '<br>',
@@ -203,7 +298,6 @@ shinyServer(function(input, output, session) {
                           '<b>Monto en Petro: </b>', datas_true$petro_amount, '<br>',
                           '<b>Fecha de Aprobación: </b>', datas_true$fecha_apro, '<br>',
                           '<b>Fecha de Firma: </b>', datas_true$fecha_edd)
-      
       leafletProxy(mapId = 'mapa', data = datas_true) %>%
         clearMarkers() %>%
         clearShapes() %>%

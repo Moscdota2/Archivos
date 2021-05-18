@@ -9,9 +9,9 @@ library(sf)
 
 
 source('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/funcion_latlong.R')
-data <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico.csv', stringsAsFactors = FALSE)
-data_historial <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/sico2.csv', stringsAsFactors = FALSE)
-data_petros <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/petros.csv', stringsAsFactors = F)
+data <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/datas/sinco1.csv', stringsAsFactors = FALSE)
+data_historial <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/datas/sinco2.csv', stringsAsFactors = FALSE)
+data_petros <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/datas/petros.csv', stringsAsFactors = F)
 
 data_historial[data_historial$code == '', 'code'] <- NA
 

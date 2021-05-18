@@ -49,3 +49,36 @@ funcion.utm.LatLong2 <- function(este,norte,huso){
   return(datalatlon)
   
 }
+
+archivo_csv <- function(x){
+  if(grepl('.csv$', x)){
+    return(read.csv(x, stringsAsFactors = F))
+  } else {return(NULL)}}
+
+estados <- c("GENERAL",
+             "AMAZONAS",
+             "ANZOÁTEGUI",
+             "APURE",
+             "ARAGUA",
+             "BARINAS",
+             "BOLÍVAR",
+             "CARABOBO",
+             "COJEDES",
+             "DISTRITO CAPITAL",
+             "FALCÓN",
+             "GUÁRICO",
+             "LARA",
+             "MÉRIDA",
+             "MIRANDA",
+             "MONAGAS",
+             "NUEVA ESPARTA",
+             "PORTUGUESA",
+             "SUCRE",
+             "TÁCHIRA",
+             "TRUJILLO",
+             "YARACUY",
+             "ZULIA")
+
+if(file_test('-f', './cache.RData')){
+  load('./cache.RData')
+}
