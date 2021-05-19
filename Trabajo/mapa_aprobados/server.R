@@ -77,6 +77,7 @@ shinyServer(function(input, output, session) {
     data_comunicacionesx <- datacomunicacionex()
     data_comunicacionesx2 <- datacomx2()
     resumen_comunicaciones <- dataresumen()
+    #petro_amountt <- data2
     save(data2, data_historial_apro, data_historial_edd, data_comunicacionesx, data_comunicacionesx2, resumen_comunicaciones, file = './cache.RData')
   }
   })
@@ -86,6 +87,7 @@ shinyServer(function(input, output, session) {
       box(fileInput(inputId = 'fileid', label = "Cargue el archivo de los Proyectos Aprobados", accept = '.csv'),
           fileInput(inputId = 'fileid2', label = "Cargue el archivo de la Historia", accept = '.csv'),
           fileInput(inputId = 'fileid3', label = "Cargue el archivo de Comunicaciones", accept = '.csv'),
+          fileInput(inputId = 'fileid4', label = "Cargue el archivo de monto de Petros", accept = '.csv'),
           actionButton(inputId = 'bot', label = 'Aceptar', icon('retweet'))
          )
     )
@@ -123,6 +125,7 @@ shinyServer(function(input, output, session) {
   })
   
   data_h_edd <- reactive({
+    
     if(is.null(input$fileid2)){
       data_historial_edd <- data_historial_edd
     } else {
@@ -142,6 +145,9 @@ shinyServer(function(input, output, session) {
   })
 
   datamapa <- reactive({
+    
+    
+    #petro_amountt <- montopetros()
     
     if(is.null(input$fileid)){
       datax <- data2
@@ -166,26 +172,41 @@ shinyServer(function(input, output, session) {
       datax <- datax %>% cbind(coord)
       color <- if_else(datax$firmados_true, 'red', if_else(datax$retrasados,'#B725CB','blue'))
       popup_mapa <- paste('<b>Proyecto: </b>',datax$project_ids.display_name)
-
-      data_petros <- read.csv('/home/analista/Github/Archivos/Trabajo/mapa_aprobados/datas/petros.csv')
-      data_petros <- data_petros %>% rename(code = Referencia, id = External.ID, petro_amount = Monto.en.petro)
+      
+      
+      data_petros <- archivo_csv(input$fileid4$datapath)
+      #data_petros <- data_petros %>% rename(code = Referencia, id = External.ID, petro_amount = Monto.en.petro)
       petro_amountt <- data_petros %>%  select(petro_amount, code)
       datax <- datax %>% left_join(petro_amountt)
+      
     }
+    
+   
+    
     
     if(!is.null(input$action2) & !is.null(input$estados)){
       datax <- datax %>% filter(firmados_true %in% input$action2)
       if(!input$estados %in% 'GENERAL'){
         datax <- datax %>% filter(obpp_estado %in% input$estados)
       }
+    }else{
+      datax <- datax %>% filter(obpp_estado %in% 'xxx')
     }
+    
     if(!is.null(input$action)){
       if(input$action == TRUE){
         datax <- datax %>% filter(retrasados %in% input$action)
       }
     }
     
+    if(!is.null(input$mes)){
+      datax <- datax %>% filter(mes %in% input$mes)
+    }else{
+      datax <- datax %>% filter(mes %in% 121)
+    }
+    
     datax
+    
   })
   
   datacomunicacionex <- reactive({
@@ -215,12 +236,18 @@ shinyServer(function(input, output, session) {
   })
   
   dataresumen <- reactive({
+    
+    codigo_situr_proyecto <- datamapa() %>% pull(obpp_situr_code)
+    
     if(is.null(input$fileid3)){
-      resumen_comunicaciones <- resumen_comunicaciones
+      com3 <- datacomx2() %>% group_by(asunto_id2.name) %>% filter(codigo_situr %in% codigo_situr_proyecto)%>% tally() %>% arrange(desc(n))
     } else {
     com3 <- datacomx2() %>% group_by(asunto_id2.name) %>% tally() %>% arrange(desc(n))
     }
+    
+    com3
   })
+ 
   
   #----------------------------------------------#
 

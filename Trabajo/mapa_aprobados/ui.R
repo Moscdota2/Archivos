@@ -36,8 +36,9 @@ ui <- fluidPage(
                         solidHeader = T, 
                         width =12,
                         checkboxGroupInput(inputId = 'action', label = 'Opciones', choices = c('Retrasados ' = TRUE)),
-                        checkboxGroupInput(inputId = 'action2', label = 'Firmados', choices = c('SI'=TRUE,'NO'=FALSE)),
+                        checkboxGroupInput(inputId = 'action2', label = 'Firmados', choices = c('SI'=TRUE,'NO'=FALSE), selected=c(TRUE,FALSE)),
                         selectInput(inputId = 'estados', label = 'Estados', choices = estados, selected = 'GENERAL', multiple = TRUE),
+                        selectInput(inputId = 'mes', label = 'Mes de Aprobacion', choices = c(3,5), selected = c(3,5), multiple = TRUE),
                         actionButton(inputId = 'mostrar_mapa', label = 'Mostrar'))
                         
                       ),
