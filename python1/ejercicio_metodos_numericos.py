@@ -6,7 +6,8 @@ q = np.array([[9, 6], [8, 7], [6, 8]])
 pq = p + q
 
 r = np.array([[5, 6, 1], [7, 5, 2]])
-print(r)
+
 
 respuesta = np.matmul(pq, r)
-print(respuesta)
+respuesta_determinante = np.linalg.det(respuesta)
+print(respuesta_determinante)
