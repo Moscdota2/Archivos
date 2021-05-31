@@ -6,5 +6,4 @@ else:
     print('Fin ciclo')    
 
 
-lista = ['Leopoldo', 'Ricardo', 'Etc...']
-print(lista[0])
+
