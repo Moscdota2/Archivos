@@ -9,4 +9,4 @@ class Persona:
 
 
 persona1 = Persona('Leopoldo', 'Mendoza', 21)
-persona1.mostrar_detalle
+persona1.mostrar_detalle()
