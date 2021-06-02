@@ -6,5 +6,8 @@ class Rectangulo:
     def area(self):
         return  self.base * self.altura
 
-saberarea = Rectangulo(4,5)
-print(saberarea.area())
+base = int(input('Ingresa la base: '))
+altura = int(input('Ingresa la altura: '))
+
+respuesta = Rectangulo(base, altura)
+print('El área del rectangulo es:', respuesta.area())
