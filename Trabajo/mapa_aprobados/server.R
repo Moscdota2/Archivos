@@ -150,6 +150,7 @@ shinyServer(function(input, output, session) {
     #petro_amountt <- montopetros()
     
     if(is.null(input$fileid)){
+      load('./cache.RData')
       datax <- data2
     } else {
       
