@@ -248,6 +248,8 @@ shinyServer(function(input, output, session) {
     
     com3
   })
+  
+ 
  
   
   #----------------------------------------------#
@@ -262,6 +264,13 @@ shinyServer(function(input, output, session) {
   
   output$comunicaciones <- renderTable({
     dataresumen()
+  })
+  
+  
+  output$estados_retrasados <- renderTable({
+    datos <- datamapa() %>% filter(retrasados == T) %>%  group_by(obpp_estado) %>% tally() %>% arrange(desc(n))
+    names(datos) <- c('Estados Retrasados', 'Número')
+    datos
   })
 
   observeEvent(input$mapa_marker_click, {

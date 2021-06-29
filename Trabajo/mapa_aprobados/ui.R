@@ -59,16 +59,19 @@ ui <- fluidPage(
                       ),
                       fluidPage(box(width = 12,
                         tableOutput(outputId = 'comunicaciones'))
+                      ),
+                      fluidPage(box(width = 12,
+                                    tableOutput(outputId = 'estados_retrasados'))
                       )
-                      )
-                    ),
-                    tabItem(
-                      tabName = 'carga',
-                      htmlOutput('carga_datos')
                     )
                     
+                  ),
+                  tabItem(
+                    tabName = 'carga',
+                    htmlOutput('carga_datos')
                   )
                   
                 )
   )
+)
 )
