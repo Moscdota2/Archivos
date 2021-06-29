@@ -272,6 +272,7 @@ shinyServer(function(input, output, session) {
     names(datos) <- c('Estados Retrasados', 'Número')
     datos
   })
+  #
 
   observeEvent(input$mapa_marker_click, {
     
