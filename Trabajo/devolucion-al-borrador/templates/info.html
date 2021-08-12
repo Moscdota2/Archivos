@@ -1,0 +1,93 @@
+<html lang="es">
+
+    <link rel="stylesheet" href="/static/css/vergas.css">	 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	
+    <head>
+        <title>Información</title>
+    </head>
+
+    <body>
+
+		<div class='container'>
+			<h1 class='Titulo'>
+				Devolución al Borrador SINCO
+			</h1>
+		</div>
+
+		<div class="container">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+	
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="{{ url_for('view_inicio') }}">Inicio <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('view_informacion') }}">Información</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{{ url_for('view_carga') }}">Cargar Data</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+
+			<hr>
+
+		<div>
+
+			<h1 style="color: blue">RESPUESTAS PARA “ESTATUS BORRADOR”.</h1>
+			<p>
+				<b><i>Título de las comunicaciones:</i></b><br><br>
+				Indicaciones para corregir proyecto en estatus borrador –' ,nombre_obpp, '(' ,nombre_codigo, ').<br>
+				<hr> <br>
+				
+				<i><b><b1>Texto de las comunicaciones:</b1></b></i><br><br>
+				<i>Estimados voceros y voceras del Poder Popular ante todo reciban un cordial saludo.</i><br><br>
+				Por medio de la presente, y posterior a la revisión y evaluación realizada al proyecto cargado en SINCO para su financiamiento, cumplimos con informarle que el proyecto se encuentra en
+				 <b>“Estatus Borrador”</b>, por la(s) siguiente(s) razón(es):<br><br>
+				<u><i><b>',motivo_1,'</b></i></u><p>',informacion_1,'</p><br>
+				<u><i><b>',motivo_2,'</b></i></u><p>',informacion_2,'</p><br>
+				<u><i><b>',motivo_3,'</b></i></u><p>',informacion_3,'</p><br>
+				<u><i><b>',motivo_4,'</b></i></u><p>',informacion_4,'</p><br>
+				<u><i><b>',motivo_5,'</b></i></u><p>',informacion_5,'</p><br>
+				Una vez realizada las correcciones correspondientes, haga clic nuevamente en el botón finalizar del paso 5 para que su proyecto sea evaluado nuevamente.
+				Recuerde que en caso de presentar inconvenientes puede enviar una comunicación a través del módulo del sistema.<br><br>
+				<b>EN SINCO, Creamos condiciones para el beneficio colectivo.</b><hr>
+				<hr>
+				<b>Estatus del proyecto:</b><p>',estatus_proyecto,'</p></h1>
+			</p>' 	
+		</body>
+		</div>
+
+		<div class="container">
+			<a href="mailto:" class="tm-contact-link">
+			  <span class="tm-contact-icon-container">
+				<span class="tm-contact-icon-container-inner">
+				  <i class="fas fa-envelope tm-contact-icon"></i>
+				</span>
+			  </span>
+			  <span class="media-body"> moscdota2@gmail.com </span>
+			</a>
+		  </div>
+		  <div class="container">
+			<a href="" class="tm-contact-link">
+			  <span class="tm-contact-icon-container">
+				<span class="tm-contact-icon-container-inner">
+				  <i class="fas fa-map-marker-alt tm-contact-icon"></i>
+				</span>
+			  </span>
+			  <span class="container">
+				Avenida El Castrero, Sistemas Tecnológicos Alcaraván, Edificio 2, Área de Análisis de Datos<br/>
+				San Juan de Los Morros, Estado Bolivariano de Guarico, Venezuela <br/> isaias joto xd  sailek jota
+			  </span>
+			</a>
+		  </div>
+		</div>
+	  </div>
+
+</html>
